@@ -1,29 +1,21 @@
-openai
-python-dotenv
+# IRIS — Python dependencies
+# Install with: pip install -r requirements.txt
+
+# LLM
+ollama
+
+# Voice
 speechrecognition
 pyttsx3
 pyaudio
-requests
-pillow
-opencv-python
-numpy
-psutil
-rich
-typer
-colorama
 
-pydantic
-tqdm
-
+# Web search
 duckduckgo-search
-wikipedia
 
-python-dateutil
-
+# Vector memory
 faiss-cpu
 sentence-transformers
 
-langchain
-
-fastapi
-uvicorn
+# Utilities
+numpy
+python-dotenv
