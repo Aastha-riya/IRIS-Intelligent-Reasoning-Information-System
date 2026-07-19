@@ -1,0 +1,7 @@
+2026-07-15 10:42:24 | INFO     | Starting IRIS...
+2026-07-15 10:42:24 | INFO     | Loading embedding model: all-MiniLM-L6-v2 ...
+2026-07-15 10:43:14 | INFO     | Embedding service ready — dimension: 384
+2026-07-15 10:43:14 | INFO     | VectorStore: created new FAISS index.
+2026-07-15 10:43:14 | DEBUG    | Summarizer initialized (implementation pending).
+2026-07-15 10:43:14 | INFO     | MemoryManager ready — 0 turns loaded.
+2026-07-15 10:43:14 | DEBUG    | LLM initialized — model: llama3.2
