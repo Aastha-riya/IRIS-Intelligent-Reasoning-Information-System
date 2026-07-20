@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  # ── IRIS UI ────────────────────────────────────────────────────────────────
+  iris:
+    build: .
+    container_name: iris-app
+    ports:
+      - "8501:8501"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    volumes:
+      - ./memory:/app/memory      # persist conversation memory
+      - ./logs:/app/logs          # persist logs
+      - ./ui/config:/app/ui/config # persist user settings
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  # ── Ollama LLM server ─────────────────────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: iris-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  ollama_data:

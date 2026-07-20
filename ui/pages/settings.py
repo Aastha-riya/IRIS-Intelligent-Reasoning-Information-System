@@ -1,30 +1,43 @@
 """
 ui/pages/settings.py
 
-Settings page — Phase 4 full implementation.
+Settings page — Steps 8–13 complete implementation.
 
-Sections:
-    General        — theme, streaming, timestamps, workflow panel
-    AI Model       — Ollama model selection, temperature, tokens, test connection
-    Agent          — toggles for reflection, planner, workflow, auto-memory
-    Memory         — context window, history size, memory limit
-    Voice          — enable/disable, speed, auto-speak
-    Advanced       — system info, reset, danger zone
+Tabs:
+    🎨 Appearance   — dark/light/system, accent, font size, compact mode
+    🤖 AI Model     — model selection, temperature, max tokens, connection test
+    🧠 Agent        — reflection/planner/workflow toggles, auto-memory
+    💾 Memory       — context window, history limits, live stats
+    🎙️ Voice        — enable/disable, speed, volume, test
+    📊 System       — CPU, RAM, uptime, loaded tools, active conversations
+    🔬 Diagnostics  — check Ollama / memory / tools / voice / all
+    🗂️ Config        — save/load/reset/import/export settings.json
+    🔒 Security     — clear cache, delete temp files, reset memory/conversations
 """
 
 from __future__ import annotations
 
+import json
+import os
+import shutil
+import tempfile
+
 import streamlit as st
 
-from ui.utils.session import get_container
-from ui.utils.prefs   import get_pref, set_pref, reset_prefs
+from ui.components.diagnostics   import render_diagnostics
+from ui.components.settings_panel import render_appearance_settings, inject_appearance_css
+from ui.components.system_info   import render_system_info
+from ui.utils.session            import get_container
+from ui.utils.prefs              import (
+    get_pref, set_pref, reset_prefs, save_prefs, load_prefs, get_all_prefs,
+)
 import config.settings as cfg
 
 
-# ── Tool descriptions ─────────────────────────────────────────────────────────
+# ── Model descriptions ────────────────────────────────────────────────────────
 
-_MODEL_DESCRIPTIONS = {
-    "llama3.2": "Meta Llama 3.2 — fast, capable, great for most tasks.",
+_MODEL_DESC = {
+    "llama3.2": "Meta Llama 3.2 — fast and capable.",
     "llama3.1": "Meta Llama 3.1 — larger context window.",
     "mistral":  "Mistral 7B — efficient and multilingual.",
     "gemma2":   "Google Gemma 2 — strong reasoning.",
@@ -35,409 +48,381 @@ _MODEL_DESCRIPTIONS = {
 # ── Main render ───────────────────────────────────────────────────────────────
 
 def render() -> None:
+    # Apply dynamic appearance CSS each render
+    inject_appearance_css()
+
     st.markdown("## ⚙️ Settings")
     st.markdown(
-        '<p style="color:#8b949e;">Configure IRIS behaviour. '
-        'Changes apply immediately for this session.</p>',
+        '<p style="color:#8b949e;">Configure IRIS. '
+        'Changes apply immediately; persistent settings are saved to '
+        '<code>ui/config/settings.json</code>.</p>',
         unsafe_allow_html=True,
     )
     st.divider()
 
-    tab_general, tab_model, tab_agent, tab_memory, tab_voice, tab_advanced = st.tabs([
-        "🎨 General",
+    tabs = st.tabs([
+        "🎨 Appearance",
         "🤖 AI Model",
         "🧠 Agent",
         "💾 Memory",
         "🎙️ Voice",
-        "⚠️ Advanced",
+        "📊 System",
+        "🔬 Diagnostics",
+        "🗂️ Config",
+        "🔒 Security",
     ])
 
-    with tab_general:
-        _section_general()
+    with tabs[0]:
+        render_appearance_settings()
 
-    with tab_model:
-        _section_model()
+    with tabs[1]:
+        _tab_model()
 
-    with tab_agent:
-        _section_agent()
+    with tabs[2]:
+        _tab_agent()
 
-    with tab_memory:
-        _section_memory()
+    with tabs[3]:
+        _tab_memory()
 
-    with tab_voice:
-        _section_voice()
+    with tabs[4]:
+        _tab_voice()
 
-    with tab_advanced:
-        _section_advanced()
+    with tabs[5]:
+        render_system_info()
 
+    with tabs[6]:
+        render_diagnostics()
 
-# ── Section: General ──────────────────────────────────────────────────────────
+    with tabs[7]:
+        _tab_config()
 
-def _section_general() -> None:
-    st.subheader("🎨 General")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        stream = st.toggle(
-            "Stream responses",
-            value=get_pref("stream_responses"),
-            help="Show response word-by-word instead of all at once.",
-        )
-        set_pref("stream_responses", stream)
-
-        show_wf = st.toggle(
-            "Show workflow panel",
-            value=get_pref("show_workflow_panel"),
-            help="Display the task timeline after multi-step responses.",
-        )
-        set_pref("show_workflow_panel", show_wf)
-
-    with col2:
-        timestamps = st.toggle(
-            "Show timestamps",
-            value=get_pref("show_timestamps"),
-            help="Display message timestamps in the chat.",
-        )
-        set_pref("show_timestamps", timestamps)
-
-        theme = st.selectbox(
-            "Theme",
-            ["dark", "light"],
-            index=0 if get_pref("theme") == "dark" else 1,
-        )
-        set_pref("theme", theme)
-
-    st.caption("Theme changes require a page reload to take full effect.")
+    with tabs[8]:
+        _tab_security()
 
 
-# ── Section: AI Model ─────────────────────────────────────────────────────────
+# ── Tab: AI Model ─────────────────────────────────────────────────────────────
 
-def _section_model() -> None:
-    st.subheader("🤖 AI Model")
+def _tab_model() -> None:
+    st.markdown("### 🤖 AI Model")
 
-    # ── Model selection ───────────────────────────────────────────────────────
-    available_models = _get_ollama_models()
-    current_model    = get_pref("model")
+    available = _get_ollama_models()
+    current   = get_pref("model")
 
-    if available_models:
-        idx = available_models.index(current_model) if current_model in available_models else 0
-        selected = st.selectbox(
-            "Active model",
-            available_models,
-            index=idx,
-            help="Models pulled in Ollama. Run 'ollama list' to see all.",
-        )
+    if available:
+        idx      = available.index(current) if current in available else 0
+        selected = st.selectbox("Active model", available, index=idx,
+                                help="Locally pulled Ollama models.")
         set_pref("model", selected)
-        if selected in _MODEL_DESCRIPTIONS:
-            st.caption(_MODEL_DESCRIPTIONS[selected])
+        if selected in _MODEL_DESC:
+            st.caption(_MODEL_DESC[selected])
     else:
-        st.text_input("Model name", value=current_model, key="model_name_input",
-                      help="Ollama not reachable — enter model name manually.")
-        if st.session_state.get("model_name_input"):
-            set_pref("model", st.session_state["model_name_input"])
+        manual = st.text_input("Model name (manual)", value=current,
+                               key="model_manual_input")
+        if manual:
+            set_pref("model", manual)
 
     st.divider()
 
-    # ── Parameters ────────────────────────────────────────────────────────────
     col1, col2 = st.columns(2)
-
     with col1:
-        temp = st.slider(
-            "Temperature",
-            min_value=0.0, max_value=2.0,
-            value=float(get_pref("temperature")),
-            step=0.05,
-            help="0 = deterministic, 1 = creative, 2 = very creative.",
-        )
+        temp = st.slider("Temperature", 0.0, 2.0,
+                         float(get_pref("temperature")), 0.05,
+                         help="0 = deterministic · 1 = creative")
         set_pref("temperature", temp)
-
     with col2:
-        tokens = st.slider(
-            "Max tokens",
-            min_value=256, max_value=8192,
-            value=int(get_pref("max_tokens")),
-            step=256,
-            help="Maximum response length in tokens.",
-        )
-        set_pref("max_tokens", tokens)
+        tok = st.slider("Max tokens", 256, 8192,
+                        int(get_pref("max_tokens")), 256)
+        set_pref("max_tokens", tok)
 
     st.divider()
-
-    # ── Connection test ───────────────────────────────────────────────────────
-    st.markdown("**Test model connection**")
-    if st.button("🔗 Test connection", key="test_model_btn"):
+    if st.button("🔗 Test connection", key="settings_test_conn"):
         with st.spinner(f"Connecting to `{get_pref('model')}`..."):
-            ok, msg = _test_ollama_connection(get_pref("model"))
-        if ok:
-            st.success(f"✅ {msg}")
-        else:
-            st.error(f"❌ {msg}")
+            ok, msg = _test_ollama(get_pref("model"))
+        (st.success if ok else st.error)(("✅ " if ok else "❌ ") + msg)
 
 
-# ── Section: Agent ────────────────────────────────────────────────────────────
+# ── Tab: Agent ────────────────────────────────────────────────────────────────
 
-def _section_agent() -> None:
-    st.subheader("🧠 Agent Behaviour")
+def _tab_agent() -> None:
+    st.markdown("### 🧠 Agent Behaviour")
 
     col1, col2 = st.columns(2)
-
     with col1:
-        refl = st.toggle(
-            "Reflection engine",
-            value=get_pref("reflection_enabled"),
-            help="Evaluate task results and retry/replan on failure.",
-        )
-        set_pref("reflection_enabled", refl)
-
-        plan = st.toggle(
-            "Planner",
-            value=get_pref("planner_enabled"),
-            help="Decompose complex goals into multi-step plans.",
-        )
-        set_pref("planner_enabled", plan)
-
+        set_pref("reflection_enabled",
+                 st.toggle("Reflection engine", get_pref("reflection_enabled")))
+        set_pref("planner_enabled",
+                 st.toggle("Planner", get_pref("planner_enabled")))
     with col2:
-        wflow = st.toggle(
-            "Workflow engine",
-            value=get_pref("workflow_enabled"),
-            help="Execute plans via the full Planner → Executor → Reflection pipeline.",
-        )
-        set_pref("workflow_enabled", wflow)
-
-        auto_mem = st.toggle(
-            "Auto-save to memory",
-            value=get_pref("auto_memory"),
-            help="Automatically store completed goals and outcomes in semantic memory.",
-        )
-        set_pref("auto_memory", auto_mem)
+        set_pref("workflow_enabled",
+                 st.toggle("Workflow engine", get_pref("workflow_enabled")))
+        set_pref("auto_memory",
+                 st.toggle("Auto-save to memory", get_pref("auto_memory")))
 
     st.divider()
     st.caption(
-        "ℹ️  These toggles control IRIS behaviour for this session. "
-        "The underlying modules are still loaded — disabling them means the agent "
-        "will fall back to simpler strategies (e.g. direct LLM answer)."
+        "Disabling a module makes the agent fall back to simpler strategies "
+        "(e.g. direct LLM answer). The modules stay loaded."
     )
 
 
-# ── Section: Memory ───────────────────────────────────────────────────────────
+# ── Tab: Memory ───────────────────────────────────────────────────────────────
 
-def _section_memory() -> None:
-    st.subheader("💾 Memory Settings")
+def _tab_memory() -> None:
+    st.markdown("### 💾 Memory Settings")
 
     col1, col2, col3 = st.columns(3)
-
     with col1:
-        mh = st.number_input(
-            "Max history turns (storage)",
-            min_value=5, max_value=200,
-            value=int(get_pref("max_history")),
-            step=5,
-            help="How many conversation turns are kept on disk.",
-        )
-        set_pref("max_history", mh)
-
+        set_pref("max_history",
+                 st.number_input("Max history turns", 5, 200,
+                                 int(get_pref("max_history")), 5))
     with col2:
-        mch = st.number_input(
-            "Context history (LLM window)",
-            min_value=1, max_value=50,
-            value=int(get_pref("max_context_history")),
-            step=1,
-            help="Recent turns injected into each LLM prompt.",
-        )
-        set_pref("max_context_history", mch)
-
+        set_pref("max_context_history",
+                 st.number_input("Context window (turns)", 1, 50,
+                                 int(get_pref("max_context_history")), 1))
     with col3:
-        mcm = st.number_input(
-            "Context memories (RAG)",
-            min_value=0, max_value=20,
-            value=int(get_pref("max_context_memories")),
-            step=1,
-            help="Semantic memories retrieved and injected per prompt.",
-        )
-        set_pref("max_context_memories", mcm)
+        set_pref("max_context_memories",
+                 st.number_input("RAG memories / prompt", 0, 20,
+                                 int(get_pref("max_context_memories")), 1))
 
     st.divider()
-
-    # ── Live memory stats ─────────────────────────────────────────────────────
-    st.markdown("**Live memory stats**")
+    st.markdown("**Live stats**")
     try:
         mm = get_container().memory_manager
-        c1, c2, c3 = st.columns(3)
+        c1, c2 = st.columns(2)
         c1.metric("Turns stored",    len(mm._history))
         c2.metric("Vectors indexed", mm._vector_store.size())
-        c3.metric("Files on disk",   3)   # history, metadata, summary
     except Exception:
         st.caption("Memory stats unavailable.")
 
 
-# ── Section: Voice ────────────────────────────────────────────────────────────
+# ── Tab: Voice ────────────────────────────────────────────────────────────────
 
-def _section_voice() -> None:
-    st.subheader("🎙️ Voice Settings")
+def _tab_voice() -> None:
+    st.markdown("### 🎙️ Voice Settings")
 
     col1, col2 = st.columns(2)
-
     with col1:
-        v_enabled = st.toggle(
-            "Enable voice output",
-            value=get_pref("voice_enabled"),
-            help="Allow IRIS to speak responses using text-to-speech.",
-        )
-        set_pref("voice_enabled", v_enabled)
-
-        auto_speak = st.toggle(
-            "Auto-speak responses",
-            value=get_pref("auto_speak"),
-            help="Automatically speak every assistant response.",
-            disabled=not v_enabled,
-        )
-        set_pref("auto_speak", auto_speak)
-
+        ve = st.toggle("Enable voice output", get_pref("voice_enabled"))
+        set_pref("voice_enabled", ve)
+        set_pref("auto_speak",
+                 st.toggle("Auto-speak responses", get_pref("auto_speak"),
+                           disabled=not ve))
     with col2:
-        speed = st.slider(
-            "Speech speed (WPM)",
-            min_value=80, max_value=300,
-            value=int(get_pref("voice_speed")),
-            step=10,
-            disabled=not v_enabled,
-            help="Words per minute for text-to-speech.",
-        )
-        set_pref("voice_speed", speed)
+        set_pref("voice_speed",
+                 st.slider("Speed (WPM)", 80, 300,
+                           int(get_pref("voice_speed")), 10, disabled=not ve))
+        set_pref("voice_volume",
+                 st.slider("Volume", 0.0, 1.0,
+                           float(get_pref("voice_volume")), 0.1, disabled=not ve))
 
-        vol = st.slider(
-            "Volume",
-            min_value=0.0, max_value=1.0,
-            value=float(get_pref("voice_volume")),
-            step=0.1,
-            disabled=not v_enabled,
-        )
-        set_pref("voice_volume", vol)
-
-    st.divider()
-
-    # ── Voice test ────────────────────────────────────────────────────────────
-    if v_enabled:
-        test_text = st.text_input(
-            "Test phrase",
-            value="Hello, I am IRIS.",
-            key="voice_test_text",
-        )
-        if st.button("🔊 Test voice", key="test_voice_btn"):
-            with st.spinner("Speaking..."):
-                _test_voice(test_text, speed)
+    if ve:
+        st.divider()
+        phrase = st.text_input("Test phrase", "Hello, I am IRIS.", key="voice_test_phrase")
+        if st.button("🔊 Test voice", key="settings_voice_test"):
+            _test_voice(phrase, int(get_pref("voice_speed")))
 
 
-# ── Section: Advanced ─────────────────────────────────────────────────────────
+# ── Tab: Config (Step 11) ─────────────────────────────────────────────────────
 
-def _section_advanced() -> None:
-    st.subheader("⚠️ Advanced")
-
-    # ── System info ───────────────────────────────────────────────────────────
-    st.markdown("**System information**")
-    try:
-        container = get_container()
-        st.json({
-            "agent_status":     container.agent.status.value,
-            "model":            get_pref("model"),
-            "tools":            list(container.tool_manager.tools.keys()),
-            "history_file":     cfg.HISTORY_FILE,
-            "vector_index":     cfg.VECTOR_INDEX_FILE,
-            "log_file":         cfg.LOG_FILE,
-            "reflection":       get_pref("reflection_enabled"),
-            "planner":          get_pref("planner_enabled"),
-            "workflow":         get_pref("workflow_enabled"),
-        })
-    except Exception as exc:
-        st.caption(f"System info unavailable: {exc}")
-
-    st.divider()
-
-    # ── Reset preferences ─────────────────────────────────────────────────────
-    st.markdown("**Reset preferences**")
-    if st.button("↺ Reset all settings to defaults", key="reset_prefs_btn"):
-        reset_prefs()
-        st.success("Settings reset to defaults.")
-        st.rerun()
-
-    st.divider()
-
-    # ── Danger zone ───────────────────────────────────────────────────────────
-    st.markdown("**Danger zone**")
+def _tab_config() -> None:
+    st.markdown("### 🗂️ Configuration")
     st.markdown(
         '<p style="color:#8b949e;font-size:0.85rem;">'
-        "These actions are permanent and cannot be undone.</p>",
+        "Settings are stored in <code>ui/config/settings.json</code> "
+        "and survive browser restarts.</p>",
         unsafe_allow_html=True,
     )
 
-    col_mem, col_conv = st.columns(2)
+    col_save, col_load, col_reset = st.columns(3)
 
-    with col_mem:
-        if st.button("🗑️ Clear all memory", key="adv_clear_mem"):
-            st.session_state["_adv_confirm_mem"] = True
+    # ── Save ──────────────────────────────────────────────────────────────────
+    with col_save:
+        if st.button("💾 Save settings", key="cfg_save", use_container_width=True,
+                     type="primary"):
+            save_prefs()
+            st.success("Settings saved to settings.json.")
 
-        if st.session_state.get("_adv_confirm_mem"):
-            st.warning("This will erase all conversation history and vector memories.")
-            cy, cn = st.columns(2)
-            if cy.button("Confirm", key="adv_mem_yes"):
-                try:
-                    get_container().memory_manager.clear_memory()
-                    st.success("Memory cleared.")
-                except Exception as e:
-                    st.error(str(e))
-                st.session_state.pop("_adv_confirm_mem", None)
-                st.rerun()
-            if cn.button("Cancel", key="adv_mem_no"):
-                st.session_state.pop("_adv_confirm_mem", None)
-                st.rerun()
+    # ── Load ──────────────────────────────────────────────────────────────────
+    with col_load:
+        if st.button("📂 Load from disk", key="cfg_load", use_container_width=True):
+            loaded = load_prefs()
+            st.session_state["prefs"] = loaded
+            st.success("Settings loaded from disk.")
+            st.rerun()
 
-    with col_conv:
-        if st.button("🗑️ Clear all conversations", key="adv_clear_conv"):
-            st.session_state["_adv_confirm_conv"] = True
+    # ── Reset ─────────────────────────────────────────────────────────────────
+    with col_reset:
+        if st.button("↺ Reset defaults", key="cfg_reset", use_container_width=True):
+            st.session_state["cfg_confirm_reset"] = True
 
-        if st.session_state.get("_adv_confirm_conv"):
-            st.warning("This will delete every conversation from this session.")
-            cy2, cn2 = st.columns(2)
-            if cy2.button("Confirm", key="adv_conv_yes"):
-                st.session_state.pop("conversations", None)
-                st.session_state.pop("active_conv_id", None)
-                st.session_state.pop("_adv_confirm_conv", None)
-                st.success("Conversations cleared.")
-                st.rerun()
-            if cn2.button("Cancel", key="adv_conv_no"):
-                st.session_state.pop("_adv_confirm_conv", None)
-                st.rerun()
+    if st.session_state.get("cfg_confirm_reset"):
+        st.warning("This will overwrite all settings with defaults.")
+        cy, cn = st.columns(2)
+        if cy.button("Confirm reset", key="cfg_reset_yes"):
+            reset_prefs()
+            st.success("Settings reset to defaults.")
+            st.session_state.pop("cfg_confirm_reset", None)
+            st.rerun()
+        if cn.button("Cancel", key="cfg_reset_no"):
+            st.session_state.pop("cfg_confirm_reset", None)
+            st.rerun()
+
+    st.divider()
+
+    # ── Export config ─────────────────────────────────────────────────────────
+    st.markdown("**Export configuration**")
+    try:
+        from ui.config.settings_io import export_config
+        config_json = export_config()
+        st.download_button(
+            label     = "⬇ Export settings.json",
+            data      = config_json.encode("utf-8"),
+            file_name = "iris_settings.json",
+            mime      = "application/json",
+            key       = "cfg_export_btn",
+        )
+    except Exception as exc:
+        st.error(f"Export unavailable: {exc}")
+
+    st.divider()
+
+    # ── Import config ─────────────────────────────────────────────────────────
+    st.markdown("**Import configuration**")
+    uploaded = st.file_uploader(
+        "Upload settings JSON",
+        type=["json"],
+        key="cfg_import_file",
+        label_visibility="collapsed",
+    )
+    if uploaded:
+        try:
+            from ui.config.settings_io import import_config
+            json_str = uploaded.read().decode("utf-8")
+            merged   = import_config(json_str)
+            st.session_state["prefs"] = merged
+            st.success("Configuration imported and applied.")
+            st.rerun()
+        except Exception as exc:
+            st.error(f"Import failed: {exc}")
+
+    st.divider()
+
+    # ── Current config preview ────────────────────────────────────────────────
+    with st.expander("👁 View current configuration"):
+        prefs = get_all_prefs()
+        # Convert any sets to lists for display
+        display = {k: list(v) if isinstance(v, set) else v for k, v in prefs.items()}
+        st.json(display)
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# ── Tab: Security (Step 12) ───────────────────────────────────────────────────
+
+def _tab_security() -> None:
+    st.markdown("### 🔒 Security & Cleanup")
+    st.markdown(
+        '<p style="color:#8b949e;font-size:0.85rem;">'
+        "These actions help protect privacy and free up disk space. "
+        "Most are permanent.</p>",
+        unsafe_allow_html=True,
+    )
+
+    # ── Clear cache ───────────────────────────────────────────────────────────
+    st.markdown("#### Clear Cache")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("🗑️ Clear embedding cache", key="sec_clear_embed",
+                     use_container_width=True):
+            try:
+                get_container().memory_manager._embedder.clear_cache()
+                st.success("Embedding cache cleared.")
+            except Exception as e:
+                st.error(str(e))
+
+    with col2:
+        if st.button("🗑️ Clear Streamlit cache", key="sec_clear_st",
+                     use_container_width=True):
+            st.cache_data.clear()
+            st.cache_resource.clear()
+            st.success("Streamlit caches cleared.")
+
+    st.divider()
+
+    # ── Delete temporary files ────────────────────────────────────────────────
+    st.markdown("#### Delete Temporary Files")
+    if st.button("🗑️ Delete temp files", key="sec_del_tmp",
+                 use_container_width=False):
+        count = _delete_temp_files()
+        st.success(f"Deleted {count} temporary file(s).")
+
+    st.divider()
+
+    # ── Reset memory ──────────────────────────────────────────────────────────
+    st.markdown("#### Reset Memory")
+    if st.button("⚠️ Reset all memory", key="sec_reset_mem"):
+        st.session_state["sec_confirm_mem"] = True
+
+    if st.session_state.get("sec_confirm_mem"):
+        st.error("This permanently erases all conversation history and vector memories.")
+        cy, cn = st.columns(2)
+        if cy.button("Yes, reset memory", key="sec_mem_yes"):
+            try:
+                get_container().memory_manager.clear_memory()
+                st.success("Memory reset.")
+            except Exception as e:
+                st.error(str(e))
+            st.session_state.pop("sec_confirm_mem", None)
+            st.rerun()
+        if cn.button("Cancel", key="sec_mem_no"):
+            st.session_state.pop("sec_confirm_mem", None)
+            st.rerun()
+
+    st.divider()
+
+    # ── Reset conversations ───────────────────────────────────────────────────
+    st.markdown("#### Reset Conversations")
+    if st.button("⚠️ Reset all conversations", key="sec_reset_conv"):
+        st.session_state["sec_confirm_conv"] = True
+
+    if st.session_state.get("sec_confirm_conv"):
+        st.error("This permanently deletes every conversation in this session.")
+        cy2, cn2 = st.columns(2)
+        if cy2.button("Yes, reset conversations", key="sec_conv_yes"):
+            st.session_state.pop("conversations", None)
+            st.session_state.pop("active_conv_id", None)
+            st.session_state.pop("sec_confirm_conv", None)
+            st.success("All conversations reset.")
+            st.rerun()
+        if cn2.button("Cancel", key="sec_conv_no"):
+            st.session_state.pop("sec_confirm_conv", None)
+            st.rerun()
+
+
+# ── Private helpers ───────────────────────────────────────────────────────────
 
 def _get_ollama_models() -> list[str]:
-    """Return a list of locally available Ollama models."""
     try:
         import ollama
-        models = ollama.list()
-        return [m["name"] for m in models.get("models", [])]
+        result = ollama.list()
+        return [m["name"] for m in result.get("models", [])]
     except Exception:
-        # Fallback: return a known-good list
         return [cfg.DEFAULT_MODEL]
 
 
-def _test_ollama_connection(model: str) -> tuple[bool, str]:
-    """Send a minimal chat to test the model connection."""
+def _test_ollama(model: str) -> tuple[bool, str]:
     try:
         import ollama
-        response = ollama.chat(
+        resp  = ollama.chat(
             model    = model,
-            messages = [{"role": "user", "content": "Reply with just: OK"}],
+            messages = [{"role": "user", "content": "Reply with: OK"}],
         )
-        reply = response["message"]["content"].strip()
-        return True, f"Model `{model}` responded: {reply[:60]}"
+        reply = resp["message"]["content"].strip()[:60]
+        return True, f"Model `{model}` responded: {reply}"
     except Exception as e:
         return False, f"Connection failed: {e}"
 
 
 def _test_voice(text: str, speed: int) -> None:
-    """Speak a test phrase using the existing Speaker."""
     import threading
     def _run():
         try:
@@ -448,3 +433,21 @@ def _test_voice(text: str, speed: int) -> None:
         except Exception:
             pass
     threading.Thread(target=_run, daemon=True).start()
+
+
+def _delete_temp_files() -> int:
+    """Delete IRIS-related temp files from the system temp directory."""
+    count = 0
+    tmp   = tempfile.gettempdir()
+    for name in os.listdir(tmp):
+        if name.startswith("iris_") or name.startswith("streamlit_"):
+            try:
+                path = os.path.join(tmp, name)
+                if os.path.isfile(path):
+                    os.remove(path)
+                elif os.path.isdir(path):
+                    shutil.rmtree(path, ignore_errors=True)
+                count += 1
+            except Exception:
+                pass
+    return count

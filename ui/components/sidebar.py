@@ -1,58 +1,78 @@
 """
 ui/components/sidebar.py
 
-Sidebar — navigation, agent status, model info, memory stats, tool list.
-Phase 3: conversation history moved into chat.py sidebar section.
+Sidebar — v1.0 production navigation.
+Pages: Dashboard · Chat · Memory · Conversations · Workflow · Tools · Logs · Settings
 """
 
 import streamlit as st
 from ui.utils.session import get_container, get_active_page, set_active_page
-from config.settings import ASSISTANT_NAME, DEFAULT_MODEL
+from ui.utils.prefs   import get_pref
+import config.settings as cfg
 
 
 def render_sidebar() -> str:
     """Render the sidebar and return the selected page name."""
     with st.sidebar:
         # ── Logo ──────────────────────────────────────────────────────────────
-        st.markdown("## 🤖 IRIS")
         st.markdown(
-            '<p style="color:#8b949e;font-size:0.8rem;margin-top:-12px;">'
-            "Intelligent Reasoning Information System</p>",
+            '<div style="text-align:center;padding:12px 0 4px;">'
+            '<div style="font-size:2rem;">🤖</div>'
+            '<div style="font-weight:700;font-size:1.1rem;">IRIS</div>'
+            '<div style="color:#8b949e;font-size:0.72rem;margin-top:-2px;">'
+            'v1.0 · Local AI Agent</div>'
+            '</div>',
             unsafe_allow_html=True,
         )
         st.divider()
 
-        # ── Agent status ──────────────────────────────────────────────────────
+        # ── Agent + model status ──────────────────────────────────────────────
         try:
             container    = get_container()
             agent_status = container.agent.status.value
-            status_class = {
-                "idle":    "status-idle",
-                "running": "status-online",
-                "paused":  "status-idle",
-                "stopped": "status-offline",
-            }.get(agent_status, "status-idle")
+            color = {"idle": "#56d364", "running": "#e3b341",
+                     "paused": "#8b949e", "stopped": "#f85149"}.get(agent_status, "#8b949e")
             st.markdown(
-                f'**Agent:** <span class="{status_class}">⬤ {agent_status}</span>',
+                f'<div style="font-size:0.82rem;">'
+                f'<span style="color:#8b949e;">Agent</span> '
+                f'<span style="color:{color};font-weight:600;">⬤ {agent_status}</span>'
+                f'</div>',
                 unsafe_allow_html=True,
             )
         except Exception:
             st.markdown(
-                '**Agent:** <span class="status-offline">⬤ offline</span>',
+                '<div style="font-size:0.82rem;color:#f85149;">⬤ offline</div>',
                 unsafe_allow_html=True,
             )
 
-        st.markdown(f"**Model:** `{DEFAULT_MODEL}`")
+        model = get_pref("model") or cfg.DEFAULT_MODEL
+        st.markdown(
+            f'<div style="font-size:0.78rem;color:#8b949e;margin-top:2px;">'
+            f'Model: <code>{model}</code></div>',
+            unsafe_allow_html=True,
+        )
         st.divider()
 
         # ── Navigation ────────────────────────────────────────────────────────
-        pages     = ["💬 Chat", "🧠 Memory", "⚙️ Workflow", "🔧 Tools", "⚙ Settings"]
+        pages = [
+            "🏠 Dashboard",
+            "💬 Chat",
+            "🧠 Memory",
+            "💬 Conversations",
+            "⚙️ Workflow",
+            "🔧 Tools",
+            "📋 Logs",
+            "⚙ Settings",
+        ]
         icons_map = {
-            "💬 Chat":     "Chat",
-            "🧠 Memory":   "Memory",
-            "⚙️ Workflow": "Workflow",
-            "🔧 Tools":    "Tools",
-            "⚙ Settings": "Settings",
+            "🏠 Dashboard":     "Dashboard",
+            "💬 Chat":          "Chat",
+            "🧠 Memory":        "Memory",
+            "💬 Conversations": "Conversations",
+            "⚙️ Workflow":      "Workflow",
+            "🔧 Tools":         "Tools",
+            "📋 Logs":          "Logs",
+            "⚙ Settings":      "Settings",
         }
 
         current        = get_active_page()
@@ -64,47 +84,44 @@ def render_sidebar() -> str:
             ),
             label_visibility="collapsed",
         )
-        selected_page = icons_map.get(selected_label, "Chat")
+        selected_page = icons_map.get(selected_label, "Dashboard")
         set_active_page(selected_page)
 
         st.divider()
 
         # ── Memory stats ──────────────────────────────────────────────────────
         try:
-            mm            = get_container().memory_manager
-            history_count = len(mm._history)
-            vector_size   = mm._vector_store.size()
-            st.markdown("**Memory**")
-            c1, c2 = st.columns(2)
-            c1.metric("Turns",   history_count)
-            c2.metric("Vectors", vector_size)
-        except Exception:
+            mm = get_container().memory_manager
             st.markdown(
-                '<span style="color:#8b949e">Memory unavailable</span>',
+                f'<div style="font-size:0.78rem;color:#8b949e;">'
+                f'💾 {len(mm._history)} turns · {mm._vector_store.size()} vectors'
+                f'</div>',
                 unsafe_allow_html=True,
             )
+        except Exception:
+            pass
 
-        # ── Tools ─────────────────────────────────────────────────────────────
-        st.divider()
+        # ── Enabled tools ─────────────────────────────────────────────────────
         try:
+            from ui.utils.prefs import is_tool_enabled
             tools = list(get_container().tool_manager.tools.keys())
-            st.markdown("**Tools**")
-            for tool in tools:
-                st.markdown(
-                    f'<span style="color:#56d364">⬤</span> `{tool}`',
-                    unsafe_allow_html=True,
-                )
-        except Exception:
+            enabled = [t for t in tools if is_tool_enabled(t)]
             st.markdown(
-                '<span style="color:#8b949e">Tools unavailable</span>',
+                f'<div style="font-size:0.78rem;color:#8b949e;margin-top:4px;">'
+                f'🔧 {len(enabled)}/{len(tools)} tools active'
+                f'</div>',
                 unsafe_allow_html=True,
             )
+        except Exception:
+            pass
 
         st.divider()
-        st.markdown(
-            '<p style="color:#8b949e;font-size:0.72rem;text-align:center;">'
-            "IRIS v1.0 — Local AI Agent</p>",
-            unsafe_allow_html=True,
-        )
+
+        # ── Quick new chat ────────────────────────────────────────────────────
+        if st.button("＋ New Chat", key="sb_new_chat", use_container_width=True):
+            from ui.utils.session import new_conv
+            new_conv()
+            set_active_page("Chat")
+            st.rerun()
 
     return selected_page
