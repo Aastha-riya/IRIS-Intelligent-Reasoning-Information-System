@@ -155,12 +155,45 @@ def switch_conv(conv_id: str) -> None:
 
 
 def list_conversations() -> list[dict]:
-    """Return all conversations sorted by creation time, newest first."""
+    """
+    Return all conversations sorted by:
+    1. Pinned conversations first
+    2. Then by creation time, newest first.
+    """
     return sorted(
         _all_conversations().values(),
-        key=lambda c: c["created"],
-        reverse=True,
+        key=lambda c: (not c.get("pinned", False), c["created"]),
+        reverse=False,
     )
+
+
+def pin_conv(conv_id: str) -> None:
+    """Toggle the pinned status of a conversation."""
+    convs = _all_conversations()
+    if conv_id in convs:
+        convs[conv_id]["pinned"] = not convs[conv_id].get("pinned", False)
+
+
+def search_conversations(query: str) -> list[dict]:
+    """
+    Return conversations whose name or message content contains the query.
+    Case-insensitive.
+    """
+    q = query.lower().strip()
+    if not q:
+        return list_conversations()
+
+    results = []
+    for conv in _all_conversations().values():
+        # Match on conversation name
+        if q in conv["name"].lower():
+            results.append(conv)
+            continue
+        # Match on any message content
+        if any(q in m.get("content", "").lower() for m in conv["messages"]):
+            results.append(conv)
+
+    return sorted(results, key=lambda c: c["created"], reverse=True)
 
 
 # ── Legacy helpers (Phase 1 compatibility) ───────────────────────────────────

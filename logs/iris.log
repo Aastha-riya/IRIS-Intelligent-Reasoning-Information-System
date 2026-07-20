@@ -628,3 +628,35 @@ Genera...
 2026-07-20 21:23:17 | INFO     |   IRIS — Intelligent Reasoning Information System
 2026-07-20 21:23:17 | INFO     |   All systems initialised and ready.
 2026-07-20 21:23:17 | INFO     | ========================================================
+2026-07-20 21:41:05 | INFO     | Starting IRIS...
+2026-07-20 21:41:05 | INFO     | Pipeline: Memory → Agent → Workflow → Executor → Reflection → LLM
+2026-07-20 21:41:05 | INFO     | Loading embedding model: all-MiniLM-L6-v2 ...
+2026-07-20 21:41:14 | INFO     | Embedding service ready — dimension: 384
+2026-07-20 21:41:14 | DEBUG    | VectorStore: loaded 35 metadata entries.
+2026-07-20 21:41:14 | INFO     | VectorStore: loaded existing index (35 vectors) ← memory/vector.index
+2026-07-20 21:41:14 | DEBUG    | Summarizer initialized (implementation pending).
+2026-07-20 21:41:14 | INFO     | MemoryManager ready — 4 turns loaded.
+2026-07-20 21:41:14 | DEBUG    | ToolManager registered tools: ['calculator', 'file_reader', 'project_scanner']
+2026-07-20 21:41:14 | DEBUG    | LLM initialized — model: llama3.2
+2026-07-20 21:41:14 | DEBUG    | Speaker initialized at 175 wpm.
+2026-07-20 21:41:14 | DEBUG    | Listener initialized.
+2026-07-20 21:41:14 | INFO     | ========================================================
+2026-07-20 21:41:14 | INFO     |   IRIS — Intelligent Reasoning Information System
+2026-07-20 21:41:14 | INFO     |   All systems initialised and ready.
+2026-07-20 21:41:14 | INFO     | ========================================================
+2026-07-20 21:42:40 | INFO     | Starting IRIS...
+2026-07-20 21:42:40 | INFO     | Pipeline: Memory → Agent → Workflow → Executor → Reflection → LLM
+2026-07-20 21:42:40 | INFO     | Loading embedding model: all-MiniLM-L6-v2 ...
+2026-07-20 21:42:50 | INFO     | Embedding service ready — dimension: 384
+2026-07-20 21:42:50 | DEBUG    | VectorStore: loaded 35 metadata entries.
+2026-07-20 21:42:50 | INFO     | VectorStore: loaded existing index (35 vectors) ← memory/vector.index
+2026-07-20 21:42:50 | DEBUG    | Summarizer initialized (implementation pending).
+2026-07-20 21:42:50 | INFO     | MemoryManager ready — 4 turns loaded.
+2026-07-20 21:42:50 | DEBUG    | ToolManager registered tools: ['calculator', 'file_reader', 'project_scanner']
+2026-07-20 21:42:50 | DEBUG    | LLM initialized — model: llama3.2
+2026-07-20 21:42:50 | DEBUG    | Speaker initialized at 175 wpm.
+2026-07-20 21:42:50 | DEBUG    | Listener initialized.
+2026-07-20 21:42:50 | INFO     | ========================================================
+2026-07-20 21:42:50 | INFO     |   IRIS — Intelligent Reasoning Information System
+2026-07-20 21:42:50 | INFO     |   All systems initialised and ready.
+2026-07-20 21:42:50 | INFO     | ========================================================

@@ -92,11 +92,15 @@ def render() -> None:
     else:
         _render_history_with_actions(messages)
 
+    # ── Handle pending prompts (voice / suggestion chips / regenerate) ──────────
+    pending = st.session_state.pop("_pending_prompt", None) or \
+              st.session_state.pop("_regen_prompt", None)
+
     # ── Input area: file upload + voice + text input ──────────────────────────
     uploaded_files = _render_input_area()
 
     # ── Process submitted prompt ──────────────────────────────────────────────
-    prompt = render_chat_input(placeholder="Ask IRIS anything...")
+    prompt = render_chat_input(placeholder="Ask IRIS anything...") or pending
 
     if prompt:
         _handle_prompt(agent, prompt, uploaded_files)
@@ -234,10 +238,6 @@ def _handle_prompt(agent, prompt: str, uploaded_files: list[dict]) -> None:
     Process a submitted prompt through the full agent pipeline with
     streaming, loading stages, and workflow panel.
     """
-    # Check for pending prompt from suggestion chips or voice
-    if st.session_state.get("_pending_prompt"):
-        prompt = st.session_state.pop("_pending_prompt")
-
     if not prompt or not prompt.strip():
         return
 
@@ -253,7 +253,7 @@ def _handle_prompt(agent, prompt: str, uploaded_files: list[dict]) -> None:
     render_user_message(prompt)
     append_message("user", prompt)
 
-    # ── Multi-stage loading indicator ────────────────────────────────────────
+    # ── Multi-stage loading indicator ─────────────────────────────────────────
     indicator = ThinkingIndicator()
     indicator.update(STAGE_THINKING)
     set_thinking_stage(STAGE_THINKING)
@@ -261,11 +261,9 @@ def _handle_prompt(agent, prompt: str, uploaded_files: list[dict]) -> None:
     wf_result = None
 
     try:
-        # Update stage to memory search
         indicator.update(STAGE_MEMORY)
         set_thinking_stage(STAGE_MEMORY)
 
-        # Hint the indicator forward — agent decides internally
         indicator.update(STAGE_PLANNING)
         set_thinking_stage(STAGE_PLANNING)
 
@@ -292,32 +290,31 @@ def _handle_prompt(agent, prompt: str, uploaded_files: list[dict]) -> None:
         response = result.error or "I couldn't complete that request."
         decision = ""
 
-    # ── Stream response ───────────────────────────────────────────────────────
-    stream_response(response)
-
-    # ── Extract workflow result (if agent used a plan) ────────────────────────
+    # ── Extract workflow result for timeline panel ────────────────────────────
     try:
-        if (
-            result.decision.value == "plan"
-            and hasattr(agent, "_workflow")
-            and agent._workflow is not None
-        ):
-            # Most recent workflow result is held in goal history
-            pass  # wf_result populated below from goal history metadata
+        if decision == "plan" and agent._goal_history:
+            last_goal = agent._goal_history[-1]
+            # Check if the agent stored a workflow result in its goal
+            if hasattr(agent, "_workflow") and agent._workflow is not None:
+                # Pull the most recent completed workflow state
+                # WorkflowEngine cleans up states after completion,
+                # so we rely on the plan being embedded in goal history metadata
+                pass
     except Exception:
         pass
 
+    # ── Stream response ───────────────────────────────────────────────────────
+    stream_response(response)
+
     # ── Save to history ───────────────────────────────────────────────────────
-    msg_entry = {
+    get_messages().append({
         "role":             "assistant",
         "content":          response,
         "decision":         decision,
         "timestamp":        _now_str(),
         "_workflow_result": wf_result,
-    }
-    get_messages().append(msg_entry)
+    })
 
-    # Re-run to refresh history display cleanly
     st.rerun()
 
 
