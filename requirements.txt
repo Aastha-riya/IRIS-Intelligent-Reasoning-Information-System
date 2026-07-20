@@ -16,6 +16,16 @@ duckduckgo-search
 faiss-cpu
 sentence-transformers
 
+# UI
+streamlit>=1.35.0
+streamlit-option-menu>=0.3.12
+fpdf2>=2.7.9
+
+# File parsing
+pypdf2>=3.0.0
+python-docx>=1.1.0
+openpyxl>=3.1.0
+
 # Utilities
 numpy
 python-dotenv
