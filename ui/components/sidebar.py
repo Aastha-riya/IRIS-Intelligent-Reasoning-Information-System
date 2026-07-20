@@ -89,31 +89,67 @@ def render_sidebar() -> str:
 
         st.divider()
 
-        # ── Memory stats ──────────────────────────────────────────────────────
+        # ── Status cards — Improvement 6 ─────────────────────────────────────
         try:
-            mm = get_container().memory_manager
-            st.markdown(
-                f'<div style="font-size:0.78rem;color:#8b949e;">'
-                f'💾 {len(mm._history)} turns · {mm._vector_store.size()} vectors'
-                f'</div>',
-                unsafe_allow_html=True,
-            )
-        except Exception:
-            pass
+            container    = get_container()
+            agent_status = container.agent.status.value
+            color = {"idle": "#56d364", "running": "#e3b341",
+                     "paused": "#8b949e", "stopped": "#f85149"}.get(agent_status, "#8b949e")
 
-        # ── Enabled tools ─────────────────────────────────────────────────────
-        try:
+            # Memory stats
+            mm           = container.memory_manager
+            turns        = len(mm._history)
+            vectors      = mm._vector_store.size()
+
+            # Tool count
             from ui.utils.prefs import is_tool_enabled
-            tools = list(get_container().tool_manager.tools.keys())
-            enabled = [t for t in tools if is_tool_enabled(t)]
+            tools        = list(container.tool_manager.tools.keys())
+            enabled      = [t for t in tools if is_tool_enabled(t)]
+
+            # Conversation count
+            from ui.utils.session import list_conversations
+            conv_count   = len(list_conversations())
+
             st.markdown(
-                f'<div style="font-size:0.78rem;color:#8b949e;margin-top:4px;">'
-                f'🔧 {len(enabled)}/{len(tools)} tools active'
+                f'<div style="display:flex;flex-direction:column;gap:6px;">'
+
+                # Agent card
+                f'<div style="background:#21262d;border:1px solid {color}44;'
+                f'border-radius:8px;padding:8px 12px;">'
+                f'<div style="font-size:0.72rem;color:#8b949e;">🤖 Agent</div>'
+                f'<div style="font-weight:600;color:{color};font-size:0.88rem;">● {agent_status.title()}</div>'
+                f'</div>'
+
+                # Memory card
+                f'<div style="background:#21262d;border:1px solid #30363d;'
+                f'border-radius:8px;padding:8px 12px;">'
+                f'<div style="font-size:0.72rem;color:#8b949e;">🧠 Memory</div>'
+                f'<div style="font-weight:600;color:#e3b341;font-size:0.85rem;">{vectors} vectors · {turns} turns</div>'
+                f'</div>'
+
+                # Tools card
+                f'<div style="background:#21262d;border:1px solid #30363d;'
+                f'border-radius:8px;padding:8px 12px;">'
+                f'<div style="font-size:0.72rem;color:#8b949e;">⚙ Tools</div>'
+                f'<div style="font-weight:600;color:#56d364;font-size:0.85rem;">{len(enabled)} Active · {len(tools)} Total</div>'
+                f'</div>'
+
+                # Chats card
+                f'<div style="background:#21262d;border:1px solid #30363d;'
+                f'border-radius:8px;padding:8px 12px;">'
+                f'<div style="font-size:0.72rem;color:#8b949e;">💬 Chats</div>'
+                f'<div style="font-weight:600;color:#79c0ff;font-size:0.85rem;">{conv_count} conversation(s)</div>'
+                f'</div>'
+
                 f'</div>',
                 unsafe_allow_html=True,
             )
         except Exception:
-            pass
+            model = get_pref("model") or cfg.DEFAULT_MODEL
+            st.markdown(
+                f'<div style="font-size:0.78rem;color:#8b949e;">Model: <code>{model}</code></div>',
+                unsafe_allow_html=True,
+            )
 
         st.divider()
 

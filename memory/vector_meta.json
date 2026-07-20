@@ -208,5 +208,29 @@
         "text": "[AGENT SUCCESS] Goal: 'Analyze my project, identify unused files, summarize the architecture, and recom' | Output: 'Project Overview\nFolder not found.\nFile not found.\nSummarize Architecture\nGenerate Summary Report\nAnalyze Architecture f'",
         "timestamp": "2026-07-20 20:40:37",
         "importance": 1.0
+    },
+    {
+        "id": 35,
+        "text": "User: why are you not open in browser\nAssistant: I'm IRIS, a knowledge-based conversational AI, and I exist solely as a text-based interface. I don't have the capability to be opened in a web browser.\n\nWhen you interact with me, you're essentially sending messages or asking questions through this chat interface. My responses are generated based on my training data and algorithms, which allows me to provide information and answer your questions.\n\nI'm designed to work within the limitations of text-based communication, and I don't have the technical capabilities to be embedded in a web page or launched as an app. If you'd like to access my knowledge base or interact with me further, feel free to keep chatting!",
+        "timestamp": "2026-07-20 23:48:52",
+        "importance": 1.0
+    },
+    {
+        "id": 36,
+        "text": "[AGENT SUCCESS] Goal: 'why are you not open in browser' | Output: 'I'm IRIS, a knowledge-based conversational AI, and I exist solely as a text-based interface. I don't have the capability'",
+        "timestamp": "2026-07-20 23:48:52",
+        "importance": 1.0
+    },
+    {
+        "id": 37,
+        "text": "User: what iss the value of pie\nAssistant: The value of pi (π) is a mathematical constant that represents the ratio of a circle's circumference to its diameter. It is approximately equal to 3.14159, but it is an irrational number, which means it cannot be expressed as a finite decimal or fraction.\n\nIn other words, pi is a unique and non-repeating value that goes on infinitely without ending in a repeating pattern. This makes it a transcendental number, meaning it is not the root of any polynomial equation with rational coefficients.\n\nPi is an essential constant in mathematics, physics, engineering, and many other fields, and its value is used to calculate areas, circumferences, volumes, and other properties of circles, spheres, and other curved shapes.",
+        "timestamp": "2026-07-20 23:54:40",
+        "importance": 1.0
+    },
+    {
+        "id": 38,
+        "text": "[AGENT SUCCESS] Goal: 'what iss the value of pie' | Output: 'The value of pi (π) is a mathematical constant that represents the ratio of a circle's circumference to its diameter. It'",
+        "timestamp": "2026-07-20 23:54:40",
+        "importance": 1.0
     }
 ]

@@ -1,1 +1,25 @@
-{}
+{
+    "assistant_name": "IRIS",
+    "model": "llama3.2",
+    "temperature": 0.7,
+    "max_tokens": 2048,
+    "max_history": 15,
+    "max_context_history": 10,
+    "max_context_memories": 5,
+    "reflection_enabled": true,
+    "planner_enabled": true,
+    "workflow_enabled": true,
+    "auto_memory": true,
+    "voice_enabled": true,
+    "auto_speak": false,
+    "voice_speed": 175,
+    "voice_volume": 1.0,
+    "theme": "dark",
+    "accent_color": "#501feb",
+    "font_size": "large",
+    "compact_mode": true,
+    "stream_responses": true,
+    "show_workflow_panel": true,
+    "show_timestamps": true,
+    "disabled_tools": []
+}

@@ -660,3 +660,149 @@ Genera...
 2026-07-20 21:42:50 | INFO     |   IRIS — Intelligent Reasoning Information System
 2026-07-20 21:42:50 | INFO     |   All systems initialised and ready.
 2026-07-20 21:42:50 | INFO     | ========================================================
+2026-07-20 23:44:41 | INFO     | Starting IRIS...
+2026-07-20 23:44:41 | INFO     | Pipeline: Memory → Agent → Workflow → Executor → Reflection → LLM
+2026-07-20 23:44:41 | INFO     | Loading embedding model: all-MiniLM-L6-v2 ...
+2026-07-20 23:44:50 | INFO     | Embedding service ready — dimension: 384
+2026-07-20 23:44:50 | DEBUG    | VectorStore: loaded 35 metadata entries.
+2026-07-20 23:44:50 | INFO     | VectorStore: loaded existing index (35 vectors) ← memory/vector.index
+2026-07-20 23:44:50 | DEBUG    | Summarizer initialized (implementation pending).
+2026-07-20 23:44:50 | INFO     | MemoryManager ready — 4 turns loaded.
+2026-07-20 23:44:50 | DEBUG    | ToolManager registered tools: ['calculator', 'file_reader', 'project_scanner']
+2026-07-20 23:44:50 | DEBUG    | LLM initialized — model: llama3.2
+2026-07-20 23:44:51 | DEBUG    | Speaker initialized at 175 wpm.
+2026-07-20 23:44:51 | DEBUG    | Listener initialized.
+2026-07-20 23:44:51 | INFO     | ========================================================
+2026-07-20 23:44:51 | INFO     |   IRIS — Intelligent Reasoning Information System
+2026-07-20 23:44:51 | INFO     |   All systems initialised and ready.
+2026-07-20 23:44:51 | INFO     | ========================================================
+2026-07-20 23:46:57 | INFO     | Starting IRIS...
+2026-07-20 23:46:57 | INFO     | Pipeline: Memory → Agent → Workflow → Executor → Reflection → LLM
+2026-07-20 23:46:57 | INFO     | Loading embedding model: all-MiniLM-L6-v2 ...
+2026-07-20 23:47:05 | INFO     | Embedding service ready — dimension: 384
+2026-07-20 23:47:05 | DEBUG    | VectorStore: loaded 35 metadata entries.
+2026-07-20 23:47:05 | INFO     | VectorStore: loaded existing index (35 vectors) ← memory/vector.index
+2026-07-20 23:47:05 | DEBUG    | Summarizer initialized (implementation pending).
+2026-07-20 23:47:05 | INFO     | MemoryManager ready — 4 turns loaded.
+2026-07-20 23:47:05 | DEBUG    | ToolManager registered tools: ['calculator', 'file_reader', 'project_scanner']
+2026-07-20 23:47:05 | DEBUG    | LLM initialized — model: llama3.2
+2026-07-20 23:47:06 | DEBUG    | Speaker initialized at 175 wpm.
+2026-07-20 23:47:06 | DEBUG    | Listener initialized.
+2026-07-20 23:47:06 | INFO     | ========================================================
+2026-07-20 23:47:06 | INFO     |   IRIS — Intelligent Reasoning Information System
+2026-07-20 23:47:06 | INFO     |   All systems initialised and ready.
+2026-07-20 23:47:06 | INFO     | ========================================================
+2026-07-20 23:47:18 | INFO     | Starting IRIS...
+2026-07-20 23:47:18 | INFO     | Pipeline: Memory → Agent → Workflow → Executor → Reflection → LLM
+2026-07-20 23:47:18 | INFO     | Loading embedding model: all-MiniLM-L6-v2 ...
+2026-07-20 23:47:27 | INFO     | Embedding service ready — dimension: 384
+2026-07-20 23:47:27 | DEBUG    | VectorStore: loaded 35 metadata entries.
+2026-07-20 23:47:27 | INFO     | VectorStore: loaded existing index (35 vectors) ← memory/vector.index
+2026-07-20 23:47:27 | DEBUG    | Summarizer initialized (implementation pending).
+2026-07-20 23:47:27 | INFO     | MemoryManager ready — 4 turns loaded.
+2026-07-20 23:47:27 | DEBUG    | ToolManager registered tools: ['calculator', 'file_reader', 'project_scanner']
+2026-07-20 23:47:27 | DEBUG    | LLM initialized — model: llama3.2
+2026-07-20 23:47:27 | DEBUG    | Speaker initialized at 175 wpm.
+2026-07-20 23:47:27 | DEBUG    | Listener initialized.
+2026-07-20 23:47:27 | INFO     | ========================================================
+2026-07-20 23:47:27 | INFO     |   IRIS — Intelligent Reasoning Information System
+2026-07-20 23:47:27 | INFO     |   All systems initialised and ready.
+2026-07-20 23:47:27 | INFO     | ========================================================
+2026-07-20 23:47:33 | INFO     | Session started in keyboard mode.
+2026-07-20 23:48:10 | INFO     | User: why are you not open in browser
+2026-07-20 23:48:10 | INFO     | Agent: received goal — 'why are you not open in browser'
+2026-07-20 23:48:10 | INFO     | Agent: iteration 1/5 — 'why are you not open in browser'
+2026-07-20 23:48:10 | INFO     | Searching memory for: 'why are you not open in browser'
+2026-07-20 23:48:10 | DEBUG    | EmbeddingService: encoded and cached (cache size: 1).
+2026-07-20 23:48:10 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 23:48:10 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 23:48:10 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 23:48:10 | INFO     | Retrieved 0 memories.
+2026-07-20 23:48:10 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 23:48:10 | INFO     | Agent: decision = direct
+2026-07-20 23:48:10 | INFO     | Sending prompt to LLM...
+2026-07-20 23:48:10 | DEBUG    | History: returning 8 messages (4 turns).
+2026-07-20 23:48:10 | DEBUG    | MemoryManager: loaded 8 history messages.
+2026-07-20 23:48:10 | INFO     | Searching memory for: 'why are you not open in browser'
+2026-07-20 23:48:10 | DEBUG    | EmbeddingService: cache hit.
+2026-07-20 23:48:10 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 23:48:10 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 23:48:10 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 23:48:10 | INFO     | Retrieved 0 memories.
+2026-07-20 23:48:10 | INFO     | Building prompt...
+2026-07-20 23:48:10 | INFO     | Added 8 chat messages.
+2026-07-20 23:48:10 | INFO     | Final prompt ready.
+2026-07-20 23:48:10 | DEBUG    | ContextBuilder summary — memories: 0, history messages: 8, total blocks: 10, ~1 tokens.
+2026-07-20 23:48:52 | DEBUG    | History: turn recorded at 2026-07-20 23:48:52
+2026-07-20 23:48:52 | DEBUG    | Storage.append → memory/history.json (5 entries)
+2026-07-20 23:48:52 | DEBUG    | EmbeddingService: encoded and cached (cache size: 2).
+2026-07-20 23:48:52 | INFO     | VectorStore: saved index (36 vectors) → memory/vector.index
+2026-07-20 23:48:52 | INFO     | VectorStore: added vector id=35 | 'User: why are you not open in browser
+Assistant: I'm IRIS, a'
+2026-07-20 23:48:52 | DEBUG    | MemoryManager: conversation saved.
+2026-07-20 23:48:52 | INFO     | Response received successfully.
+2026-07-20 23:48:52 | INFO     | Agent: LLM response received.
+2026-07-20 23:48:52 | DEBUG    | EmbeddingService: encoded and cached (cache size: 3).
+2026-07-20 23:48:52 | INFO     | VectorStore: saved index (37 vectors) → memory/vector.index
+2026-07-20 23:48:52 | INFO     | VectorStore: added vector id=36 | '[AGENT SUCCESS] Goal: 'why are you not open in browser' | Ou'
+2026-07-20 23:48:52 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'why are you not open in browser' | Ou'
+2026-07-20 23:48:52 | DEBUG    | Agent: learned from success experience.
+2026-07-20 23:48:52 | INFO     | IRIS: I'm IRIS, a knowledge-based conversational AI, and I exist solely as a text-based interface. I don't have the capability
+2026-07-20 23:48:52 | DEBUG    | Speaking: I'm IRIS, a knowledge-based conversational AI, and I exist solely as a text-base...
+2026-07-20 23:50:43 | INFO     | Session ended by user.
+2026-07-20 23:50:43 | DEBUG    | Speaking: Goodbye!
+2026-07-20 23:52:40 | INFO     | Starting IRIS...
+2026-07-20 23:52:40 | INFO     | Pipeline: Memory → Agent → Workflow → Executor → Reflection → LLM
+2026-07-20 23:52:40 | INFO     | Loading embedding model: all-MiniLM-L6-v2 ...
+2026-07-20 23:52:57 | INFO     | Embedding service ready — dimension: 384
+2026-07-20 23:52:57 | DEBUG    | VectorStore: loaded 37 metadata entries.
+2026-07-20 23:52:57 | INFO     | VectorStore: loaded existing index (37 vectors) ← memory/vector.index
+2026-07-20 23:52:57 | DEBUG    | Summarizer initialized (implementation pending).
+2026-07-20 23:52:57 | INFO     | MemoryManager ready — 5 turns loaded.
+2026-07-20 23:52:57 | DEBUG    | ToolManager registered tools: ['calculator', 'file_reader', 'project_scanner']
+2026-07-20 23:52:57 | DEBUG    | LLM initialized — model: llama3.2
+2026-07-20 23:52:58 | DEBUG    | Speaker initialized at 175 wpm.
+2026-07-20 23:52:58 | DEBUG    | Listener initialized.
+2026-07-20 23:52:58 | INFO     | ========================================================
+2026-07-20 23:52:58 | INFO     |   IRIS — Intelligent Reasoning Information System
+2026-07-20 23:52:58 | INFO     |   All systems initialised and ready.
+2026-07-20 23:52:58 | INFO     | ========================================================
+2026-07-20 23:53:57 | INFO     | Agent: received goal — 'what iss the value of pie'
+2026-07-20 23:53:57 | INFO     | Agent: iteration 1/5 — 'what iss the value of pie'
+2026-07-20 23:53:57 | INFO     | Searching memory for: 'what iss the value of pie'
+2026-07-20 23:53:58 | DEBUG    | EmbeddingService: encoded and cached (cache size: 1).
+2026-07-20 23:53:58 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 23:53:58 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 23:53:58 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 23:53:58 | INFO     | Retrieved 0 memories.
+2026-07-20 23:53:58 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 23:53:58 | INFO     | Agent: decision = direct
+2026-07-20 23:53:58 | INFO     | Sending prompt to LLM...
+2026-07-20 23:53:58 | DEBUG    | History: returning 10 messages (5 turns).
+2026-07-20 23:53:58 | DEBUG    | MemoryManager: loaded 10 history messages.
+2026-07-20 23:53:58 | INFO     | Searching memory for: 'what iss the value of pie'
+2026-07-20 23:53:58 | DEBUG    | EmbeddingService: cache hit.
+2026-07-20 23:53:58 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 23:53:58 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 23:53:58 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 23:53:58 | INFO     | Retrieved 0 memories.
+2026-07-20 23:53:58 | INFO     | Building prompt...
+2026-07-20 23:53:58 | INFO     | Added 10 chat messages.
+2026-07-20 23:53:58 | INFO     | Final prompt ready.
+2026-07-20 23:53:58 | DEBUG    | ContextBuilder summary — memories: 0, history messages: 10, total blocks: 12, ~1 tokens.
+2026-07-20 23:54:40 | DEBUG    | History: turn recorded at 2026-07-20 23:54:40
+2026-07-20 23:54:40 | DEBUG    | Storage.append → memory/history.json (6 entries)
+2026-07-20 23:54:40 | DEBUG    | EmbeddingService: encoded and cached (cache size: 2).
+2026-07-20 23:54:40 | INFO     | VectorStore: saved index (38 vectors) → memory/vector.index
+2026-07-20 23:54:40 | INFO     | VectorStore: added vector id=37 | 'User: what iss the value of pie
+Assistant: The value of pi ('
+2026-07-20 23:54:40 | DEBUG    | MemoryManager: conversation saved.
+2026-07-20 23:54:40 | INFO     | Response received successfully.
+2026-07-20 23:54:40 | INFO     | Agent: LLM response received.
+2026-07-20 23:54:40 | DEBUG    | EmbeddingService: encoded and cached (cache size: 3).
+2026-07-20 23:54:40 | INFO     | VectorStore: saved index (39 vectors) → memory/vector.index
+2026-07-20 23:54:40 | INFO     | VectorStore: added vector id=38 | '[AGENT SUCCESS] Goal: 'what iss the value of pie' | Output: '
+2026-07-20 23:54:40 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'what iss the value of pie' | Output: '
+2026-07-20 23:54:40 | DEBUG    | Agent: learned from success experience.
+2026-07-20 23:55:10 | DEBUG    | Speaker initialized at 175 wpm.
+2026-07-20 23:55:10 | DEBUG    | Speaking: The value of pi (π) is a mathematical constant that represents the ratio of a ci...

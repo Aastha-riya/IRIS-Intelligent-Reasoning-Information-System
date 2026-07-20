@@ -41,9 +41,10 @@ from ui.components.file_upload      import (
     render_file_upload, build_file_context, render_uploaded_file_badges,
 )
 from ui.components.loading_indicator import (
+    ActivityPanel,
     ThinkingIndicator,
     STAGE_THINKING, STAGE_MEMORY, STAGE_PLANNING,
-    STAGE_EXECUTING, STAGE_REFLECTING, STAGE_DONE,
+    STAGE_EXECUTING, STAGE_REFLECTING, STAGE_GENERATING, STAGE_SAVING, STAGE_DONE,
 )
 from ui.components.message_actions  import render_message_actions
 from ui.components.streaming_chat   import stream_response
@@ -210,18 +211,26 @@ def _render_history_with_actions(messages: list[dict]) -> None:
 
 def _render_input_area() -> list[dict]:
     """
-    Render file uploader + voice button above the sticky chat input.
-    Returns the list of uploaded file dicts.
+    Improvement 5 — Better Chat Input.
+    Renders: 📎 file upload · 🎤 voice · [text input with icons]
     """
-    col_files, col_voice = st.columns([11, 1])
+    # File upload + voice on same row with icon labels
+    col_attach_label, col_files, col_voice_label, col_voice = st.columns([1, 9, 1, 1])
 
+    col_attach_label.markdown(
+        '<div style="padding-top:8px;font-size:1.2rem;text-align:center;">📎</div>',
+        unsafe_allow_html=True,
+    )
     with col_files:
         uploaded = render_file_upload()
 
+    col_voice_label.markdown(
+        '<div style="padding-top:8px;font-size:1.2rem;text-align:center;">🎤</div>',
+        unsafe_allow_html=True,
+    )
     with col_voice:
         voiced_text = render_voice_button(key="voice_input_btn")
         if voiced_text:
-            # Store voiced text as a pending prompt
             st.session_state["_pending_prompt"] = voiced_text
             st.rerun()
 
@@ -235,54 +244,72 @@ def _render_input_area() -> list[dict]:
 
 def _handle_prompt(agent, prompt: str, uploaded_files: list[dict]) -> None:
     """
-    Process a submitted prompt through the full agent pipeline with
-    streaming, loading stages, and workflow panel.
+    Improvements 2, 3, 4 — Thinking animation + Streaming + Activity Panel.
     """
     if not prompt or not prompt.strip():
         return
 
-    # Build final prompt (file context + user text)
     file_context = build_file_context(uploaded_files)
     full_prompt  = (
         f"Context from uploaded files:\n\n{file_context}\n\n---\n\n{prompt}"
-        if file_context
-        else prompt
+        if file_context else prompt
     )
 
-    # ── Show user message immediately ─────────────────────────────────────────
+    # Show user message immediately
     render_user_message(prompt)
     append_message("user", prompt)
 
-    # ── Multi-stage loading indicator ─────────────────────────────────────────
-    indicator = ThinkingIndicator()
-    indicator.update(STAGE_THINKING)
-    set_thinking_stage(STAGE_THINKING)
+    # ── Improvement 4: Activity Panel ─────────────────────────────────────────
+    panel = ActivityPanel()
+    panel.start("🔍", "Memory",    "Searching context...")
+    set_thinking_stage(STAGE_MEMORY)
+
+    panel.start("🧠", "Planner",   "Creating plan...")
+    set_thinking_stage(STAGE_PLANNING)
 
     wf_result = None
 
     try:
-        indicator.update(STAGE_MEMORY)
-        set_thinking_stage(STAGE_MEMORY)
-
-        indicator.update(STAGE_PLANNING)
-        set_thinking_stage(STAGE_PLANNING)
-
         result = agent.run(full_prompt)
 
-        indicator.update(STAGE_REFLECTING)
-        set_thinking_stage(STAGE_REFLECTING)
+        # Mark stages complete based on decision
+        decision = result.decision.value if result.succeeded() else ""
 
-        indicator.clear()
-        set_thinking_stage("")
+        panel.complete("Memory",  "Context loaded ✔")
+        if decision == "plan":
+            panel.complete("Planner", "Plan created ✔")
+            panel.start("⚙️",  "Executor",   "Running tasks...")
+            set_thinking_stage(STAGE_EXECUTING)
+            panel.complete("Executor",   "Tasks complete ✔")
+            panel.start("🔄", "Reflection", "Evaluating result...")
+            set_thinking_stage(STAGE_REFLECTING)
+            panel.complete("Reflection", "Reflection done ✔")
+        elif decision == "tool":
+            panel.complete("Planner",  "Tool selected ✔")
+            panel.start("🔧", "Tool",   "Executing tool...")
+            set_thinking_stage(STAGE_EXECUTING)
+            panel.complete("Tool",     "Tool finished ✔")
+        else:
+            panel.complete("Planner", "Answered directly ✔")
+
+        panel.start("💭", "LLM",    "Generating response...")
+        set_thinking_stage(STAGE_GENERATING)
+        panel.start("💾", "Memory", "Saving to memory...")
+        set_thinking_stage(STAGE_SAVING)
+        panel.complete("LLM",    "Response ready ✔")
+        panel.complete("Memory", "Memory updated ✔")
 
     except Exception as exc:
-        indicator.clear()
+        panel.close()
         set_thinking_stage("")
         st.error(f"❌ Agent error: {exc}")
         append_message("assistant", f"I encountered an error: {exc}")
         return
 
-    # ── Determine response text ───────────────────────────────────────────────
+    panel.close()
+    set_thinking_stage("")
+
+    # ── Improvement 3: Stream response word-by-word ───────────────────────────
     if result.succeeded():
         response = result.output or "Done."
         decision = result.decision.value
@@ -290,23 +317,8 @@ def _handle_prompt(agent, prompt: str, uploaded_files: list[dict]) -> None:
         response = result.error or "I couldn't complete that request."
         decision = ""
 
-    # ── Extract workflow result for timeline panel ────────────────────────────
-    try:
-        if decision == "plan" and agent._goal_history:
-            last_goal = agent._goal_history[-1]
-            # Check if the agent stored a workflow result in its goal
-            if hasattr(agent, "_workflow") and agent._workflow is not None:
-                # Pull the most recent completed workflow state
-                # WorkflowEngine cleans up states after completion,
-                # so we rely on the plan being embedded in goal history metadata
-                pass
-    except Exception:
-        pass
-
-    # ── Stream response ───────────────────────────────────────────────────────
     stream_response(response)
 
-    # ── Save to history ───────────────────────────────────────────────────────
     get_messages().append({
         "role":             "assistant",
         "content":          response,

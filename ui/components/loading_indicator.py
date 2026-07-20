@@ -1,26 +1,19 @@
 """
 ui/components/loading_indicator.py
 
-Loading / thinking indicator for the IRIS chat UI.
+Improvements 2 & 4 — Thinking Animation + Agent Activity Panel.
 
-Shows the user what stage the agent is currently in:
+Shows a live multi-stage pipeline while the agent works:
 
-    🧠 Thinking...       ← initial reasoning
-    🔍 Searching memory  ← observe phase
-    📋 Planning...       ← planner running
-    ⚙️  Executing...      ← executor running
-    🔄 Reflecting...     ← reflection engine
-    ✅ Response ready    ← done
+    🧠 Planning...
+    ⚙ Executing...
+    💭 Generating response...
 
-Usage:
-    with thinking_context("🧠 Thinking..."):
-        result = agent.run(prompt)
+And an activity panel with checkmarks as each stage completes:
 
-    Or for manual control:
-        indicator = ThinkingIndicator()
-        indicator.update("📋 Planning...")
-        ...
-        indicator.clear()
+    🧠 Planner      ✔ Created Plan
+    ⚙  Calculator   ✔ Finished
+    💾 Memory        Updating...
 """
 
 from __future__ import annotations
@@ -32,81 +25,145 @@ import streamlit as st
 
 # ── Stage labels ──────────────────────────────────────────────────────────────
 
-STAGE_THINKING  = "🧠 Thinking..."
-STAGE_MEMORY    = "🔍 Searching memory..."
-STAGE_PLANNING  = "📋 Planning..."
-STAGE_EXECUTING = "⚙️ Executing..."
+STAGE_THINKING   = "🧠 Planning..."
+STAGE_MEMORY     = "🔍 Searching memory..."
+STAGE_PLANNING   = "📋 Creating plan..."
+STAGE_EXECUTING  = "⚙️ Executing..."
+STAGE_GENERATING = "💭 Generating response..."
 STAGE_REFLECTING = "🔄 Reflecting..."
-STAGE_DONE      = "✅ Response ready"
+STAGE_SAVING     = "💾 Saving to memory..."
+STAGE_DONE       = "✅ Response ready"
+
+# Ordered pipeline for the activity panel
+PIPELINE_STAGES = [
+    ("🧠", "Planner",    STAGE_PLANNING),
+    ("⚙️",  "Executor",   STAGE_EXECUTING),
+    ("🔄", "Reflection", STAGE_REFLECTING),
+    ("💾", "Memory",     STAGE_SAVING),
+    ("💭", "LLM",        STAGE_GENERATING),
+]
 
 
-# ── Simple spinner wrapper ────────────────────────────────────────────────────
-
-@contextmanager
-def thinking_context(label: str = STAGE_THINKING):
-    """
-    Context manager that shows a styled thinking indicator while the
-    enclosed block runs.
-
-    Usage:
-        with thinking_context("📋 Planning..."):
-            result = agent.run(prompt)
-    """
-    placeholder = st.empty()
-    placeholder.markdown(
-        f'<div style="display:flex;align-items:center;gap:10px;'
-        f'color:#8b949e;font-size:0.9rem;padding:8px 0;">'
-        f'<div class="thinking-dot"></div>{label}</div>',
-        unsafe_allow_html=True,
-    )
-    try:
-        yield placeholder
-    finally:
-        placeholder.empty()
-
-
-# ── Multi-stage indicator ─────────────────────────────────────────────────────
+# ── ThinkingIndicator — inline animated stage ─────────────────────────────────
 
 class ThinkingIndicator:
     """
-    Multi-stage thinking indicator.
-    Call update() as the agent progresses through stages.
-    Call clear() when done.
-
-    Usage:
-        indicator = ThinkingIndicator()
-        indicator.update(STAGE_PLANNING)
-        plan = planner.create_plan(goal)
-        indicator.update(STAGE_EXECUTING)
-        result = executor.run(plan)
-        indicator.clear()
+    Shows a single animated stage label that updates as processing moves forward.
+    Call update(stage) to advance, clear() when done.
     """
 
     def __init__(self) -> None:
         self._slot = st.empty()
 
     def update(self, stage: str) -> None:
-        """Show the given stage label in the indicator slot."""
         self._slot.markdown(
-            f'<div style="display:flex;align-items:center;gap:10px;'
-            f'background:#21262d;border:1px solid #30363d;border-radius:10px;'
-            f'padding:10px 16px;color:#8b949e;font-size:0.88rem;">'
-            f'<span style="animation:spin 1s linear infinite;'
-            f'display:inline-block;">⟳</span> {stage}</div>',
+            f'<div style="display:flex;align-items:center;gap:12px;'
+            f'background:#161b22;border:1px solid #30363d;border-radius:10px;'
+            f'padding:10px 16px;margin:6px 0;font-size:0.9rem;">'
+            f'<span style="display:inline-block;animation:spin 0.8s linear infinite;">⟳</span>'
+            f'<span style="color:#8b949e;">{stage}</span>'
+            f'</div>',
             unsafe_allow_html=True,
         )
 
     def clear(self) -> None:
-        """Remove the indicator."""
         self._slot.empty()
 
 
-# ── CSS for animation (injected via theme.py) ─────────────────────────────────
+# ── ActivityPanel — full pipeline with checkmarks ────────────────────────────
+
+class ActivityPanel:
+    """
+    Improvement 4 — Agent Activity Panel.
+
+    Shows the full pipeline with live status:
+        🧠 Planner      ✔ Created Plan
+        ⚙  Calculator   ✔ Finished
+        💾 Memory        Updating...
+
+    Usage:
+        panel = ActivityPanel()
+        panel.start("🧠", "Planner", "Planning...")
+        ...
+        panel.complete("🧠", "Planner", "Created plan ✔")
+        panel.start("⚙️", "Executor", "Running tool...")
+        ...
+        panel.close()
+    """
+
+    def __init__(self) -> None:
+        self._slot   = st.empty()
+        self._stages: list[dict] = []
+
+    def start(self, icon: str, name: str, detail: str = "") -> None:
+        """Mark a stage as currently running."""
+        # Remove existing entry for this name if present
+        self._stages = [s for s in self._stages if s["name"] != name]
+        self._stages.append({"icon": icon, "name": name, "detail": detail, "done": False})
+        self._render()
+
+    def complete(self, name: str, detail: str = "") -> None:
+        """Mark a stage as completed."""
+        for s in self._stages:
+            if s["name"] == name:
+                s["done"]   = True
+                s["detail"] = detail
+        self._render()
+
+    def close(self) -> None:
+        """Remove the panel."""
+        self._slot.empty()
+
+    def _render(self) -> None:
+        rows = []
+        for s in self._stages:
+            if s["done"]:
+                icon_html = f'<span style="color:#56d364;font-weight:600;">✔</span>'
+                color     = "#56d364"
+            else:
+                icon_html = f'<span style="display:inline-block;animation:spin 0.9s linear infinite;color:#e3b341;">⟳</span>'
+                color     = "#e3b341"
+
+            rows.append(
+                f'<div style="display:flex;align-items:center;gap:8px;'
+                f'padding:4px 0;border-bottom:1px solid #21262d;">'
+                f'<span style="width:20px;text-align:center;">{s["icon"]}</span>'
+                f'<span style="min-width:80px;font-weight:600;color:#e0e0e0;">{s["name"]}</span>'
+                f'{icon_html}'
+                f'<span style="color:{color};font-size:0.82rem;">{s["detail"]}</span>'
+                f'</div>'
+            )
+
+        self._slot.markdown(
+            f'<div style="background:#161b22;border:1px solid #30363d;border-radius:10px;'
+            f'padding:10px 14px;margin:6px 0;">'
+            f'<div style="font-size:0.75rem;color:#8b949e;margin-bottom:6px;font-weight:600;">'
+            f'CURRENT ACTIVITY</div>'
+            + "".join(rows)
+            + "</div>",
+            unsafe_allow_html=True,
+        )
+
+
+# ── Simple context-manager wrapper ────────────────────────────────────────────
+
+@contextmanager
+def thinking_context(label: str = STAGE_THINKING):
+    """One-liner context manager for simple blocking calls."""
+    indicator = ThinkingIndicator()
+    indicator.update(label)
+    try:
+        yield indicator
+    finally:
+        indicator.clear()
+
+
+# ── CSS ───────────────────────────────────────────────────────────────────────
 
 THINKING_CSS = """
 <style>
 @keyframes spin {
-    0%   { transform: rotate(0deg); }
+    0%   { transform: rotate(0deg);   }
     100% { transform: rotate(360deg); }
 }
 .thinking-dot {
@@ -116,7 +173,7 @@ THINKING_CSS = """
     animation: pulse 1.2s ease-in-out infinite;
 }
 @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1);   }
+    0%, 100% { opacity: 1;   transform: scale(1);   }
     50%       { opacity: 0.4; transform: scale(0.7); }
 }
 </style>
