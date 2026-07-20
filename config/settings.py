@@ -34,6 +34,17 @@ VECTOR_META_FILE: str  = "memory/vector_meta.json"  # metadata for each vector
 VECTOR_SEARCH_TOP_K: int = 3        # Number of similar memories to retrieve
 SIMILARITY_THRESHOLD: float = 0.75  # Minimum similarity score to surface a memory
 
+# ── Executor ──────────────────────────────────────────────────────────────────
+MAX_TASK_RETRIES:   int = 2     # Retry attempts before a task is marked FAILED
+TASK_TIMEOUT:       int = 30    # Seconds before a synchronous task is considered hung
+
+# ── Reflection ────────────────────────────────────────────────────────────────
+MAX_REPLAN_ATTEMPTS:   int = 2      # How many times the engine may re-plan a failed goal
+REFLECTION_FAIL_THRESHOLD: int = 2  # Failed tasks in one plan that triggers re-planning
+
+# ── Workflow ──────────────────────────────────────────────────────────────────
+MAX_WORKFLOW_CYCLES: int = 10   # Max plan+reflect cycles before forceful abort
+
 # ── Voice ─────────────────────────────────────────────────────────────────────
 VOICE_SPEED: int = 175              # Words per minute for text-to-speech
 AMBIENT_NOISE_DURATION: float = 1.0 # Seconds to sample ambient noise before listening

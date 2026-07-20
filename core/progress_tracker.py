@@ -15,8 +15,9 @@ Used by IrisAssistant to answer "What are you doing?" queries.
 
 from __future__ import annotations
 
-from models.plan import Plan
-from models.task import Task, TaskStatus
+from models.enums import TaskStatus
+from models.plan  import Plan
+from models.task  import Task
 from utils.logger import logger
 
 
@@ -77,10 +78,12 @@ class ProgressTracker:
         for task in self._plan.tasks:
             icon = {
                 TaskStatus.PENDING:   "○",
+                TaskStatus.WAITING:   "◔",
                 TaskStatus.RUNNING:   "▶",
                 TaskStatus.COMPLETED: "✓",
                 TaskStatus.FAILED:    "✗",
                 TaskStatus.SKIPPED:   "⟳",
+                TaskStatus.CANCELLED: "⊘",
             }.get(task.status, "?")
             lines.append(f"  {icon} [{task.id}] {task.description}  ({task.status.value})")
             if task.error:

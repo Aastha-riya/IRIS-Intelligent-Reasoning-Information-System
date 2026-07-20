@@ -1,8 +1,31 @@
 """
 core/assistant.py
 
-Orchestrates the IRIS session loop.
-Receives all dependencies via the Container — creates nothing itself.
+IrisAssistant — the conductor of the IRIS session.
+
+Single responsibility:
+    - Manage the user interaction loop (input / output)
+    - Delegate every query to AutonomousAgent.run()
+    - Speak or print the response
+
+The assistant knows nothing about planning, tools, memory, or execution.
+It only knows three things:
+    1. How to get input from the user (keyboard or voice)
+    2. How to pass that input to the Agent
+    3. How to deliver the Agent's response back to the user
+
+Architecture:
+    main.py
+        ↓
+    IrisAssistant.start()
+        ↓
+    AutonomousAgent.run(user_input)
+        ↓
+    [Memory → Reason → Plan → Workflow → Executor → Reflect → Learn]
+        ↓
+    response (str)
+        ↓
+    Speaker.speak(response)
 """
 
 from app.container import Container
@@ -11,24 +34,19 @@ from utils.logger import logger
 
 class IrisAssistant:
     """
-    Main session controller.
-    Handles user input, routes to tools or LLM, and speaks replies.
-    All memory operations go through memory_manager — never directly to storage.
+    Session conductor — receives input, delegates to the Agent, delivers output.
+    Creates nothing. Knows nothing about internals. Just orchestrates the loop.
     """
 
     def __init__(self, container: Container) -> None:
-        self.llm            = container.llm
-        self.memory_manager = container.memory_manager
-        self.speaker        = container.speaker
-        self.listener       = container.listener
-        self.tool_manager   = container.tool_manager
-        self.reasoner       = container.reasoner
-        self.planner        = container.planner
-        self.executor       = container.executor
+        self._agent    = container.agent
+        self._speaker  = container.speaker
+        self._listener = container.listener
 
     # ── Private helpers ───────────────────────────────────────────────────────
 
     def _choose_mode(self) -> str:
+        """Ask the user to choose keyboard or voice input."""
         print("\n========== IRIS ==========")
         print("1. Keyboard Mode")
         print("2. Voice Mode")
@@ -43,14 +61,28 @@ class IrisAssistant:
             print("Invalid choice. Please enter 1 or 2.")
 
     def _get_input(self, mode: str) -> str:
+        """Capture the next user message."""
         if mode == "keyboard":
             return input("\nYou: ").strip()
-        return self.listener.listen()
+        return self._listener.listen()
+
+    def _deliver(self, response: str) -> None:
+        """Print and speak the agent's response."""
+        self._speaker.speak(response)
 
     # ── Session loop ──────────────────────────────────────────────────────────
 
     def start(self) -> None:
-        """Start the main interaction loop."""
+        """
+        Start the main interaction loop.
+
+        Flow:
+            user types / speaks
+                ↓
+            agent.run(input)   ← entire intelligence pipeline runs here
+                ↓
+            speak(response)
+        """
         mode = self._choose_mode()
         logger.info(f"Session started in {mode} mode.")
 
@@ -65,24 +97,23 @@ class IrisAssistant:
 
             if user.lower() in ["exit", "quit", "bye"]:
                 logger.info("Session ended by user.")
-                self.speaker.speak("Goodbye!")
+                self._deliver("Goodbye!")
                 break
 
             logger.info(f"User: {user}")
 
-            # Route: tool or LLM?
-            action = self.reasoner.analyze(user)
-            logger.debug(f"Reasoner decision: {action}")
+            # ── Single call — everything else is the Agent's responsibility ──
+            result = self._agent.run(user)
 
-            if action != "llm":
-                result = self.tool_manager.execute(user)
-                if result:
-                    self.speaker.speak(result)
-                    continue
+            # Produce a response even on failure
+            if result.succeeded():
+                response = result.output
+            else:
+                response = (
+                    result.error
+                    if result.error
+                    else "I encountered an issue. Please try again."
+                )
 
-            # Plan → execute → LLM reply
-            plan = self.planner.create_plan(user)
-            self.executor.execute(plan)
-
-            reply = self.llm.chat(user)
-            self.speaker.speak(reply)
+            logger.info(f"IRIS: {response[:120]}")
+            self._deliver(response)

@@ -5,3 +5,556 @@
 2026-07-15 10:43:14 | DEBUG    | Summarizer initialized (implementation pending).
 2026-07-15 10:43:14 | INFO     | MemoryManager ready — 0 turns loaded.
 2026-07-15 10:43:14 | DEBUG    | LLM initialized — model: llama3.2
+2026-07-20 20:31:21 | INFO     | Starting IRIS...
+2026-07-20 20:31:21 | INFO     | Pipeline: Memory → Agent → Workflow → Executor → Reflection → LLM
+2026-07-20 20:31:21 | INFO     | Loading embedding model: all-MiniLM-L6-v2 ...
+2026-07-20 20:31:31 | INFO     | Embedding service ready — dimension: 384
+2026-07-20 20:31:31 | INFO     | VectorStore: created new FAISS index.
+2026-07-20 20:31:31 | DEBUG    | Summarizer initialized (implementation pending).
+2026-07-20 20:31:31 | INFO     | MemoryManager ready — 0 turns loaded.
+2026-07-20 20:31:31 | DEBUG    | ToolManager registered tools: ['calculator', 'file_reader', 'project_scanner']
+2026-07-20 20:31:31 | DEBUG    | LLM initialized — model: llama3.2
+2026-07-20 20:31:32 | DEBUG    | Speaker initialized at 175 wpm.
+2026-07-20 20:31:32 | DEBUG    | Listener initialized.
+2026-07-20 20:31:32 | INFO     | ========================================================
+2026-07-20 20:31:32 | INFO     |   IRIS — Intelligent Reasoning Information System
+2026-07-20 20:31:32 | INFO     |   All systems initialised and ready.
+2026-07-20 20:31:32 | INFO     | ========================================================
+2026-07-20 20:31:41 | INFO     | Session started in keyboard mode.
+2026-07-20 20:32:18 | INFO     | User: Analyze my Python project and tell me what needs improvement.
+2026-07-20 20:32:18 | INFO     | Agent: received goal — 'Analyze my Python project and tell me what needs improvement.'
+2026-07-20 20:32:18 | INFO     | Agent: iteration 1/5 — 'Analyze my Python project and tell me what needs improvement'
+2026-07-20 20:32:18 | INFO     | Searching memory for: 'Analyze my Python project and tell me what needs improvement'
+2026-07-20 20:32:18 | INFO     | No relevant memories found — vector store is empty.
+2026-07-20 20:32:18 | INFO     | Retrieved 0 memories.
+2026-07-20 20:32:18 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 20:32:18 | INFO     | Agent: decision = plan
+2026-07-20 20:32:18 | INFO     | Workflow started: 'Analyze my Python project and tell me what needs improvement.'
+2026-07-20 20:32:18 | INFO     | Workflow cycle 1/10
+2026-07-20 20:32:18 | INFO     | Planner: goal = 'Analyze my Python project and tell me what needs improvement.'
+2026-07-20 20:32:18 | DEBUG    | Planner: attempt 1/3
+2026-07-20 20:33:01 | INFO     | Plan validation passed.
+2026-07-20 20:33:01 | INFO     | Plan created: 5 task(s) for 'Analyze my Python project and tell me what needs improvement'
+2026-07-20 20:33:01 | INFO     | Execution order:
+2026-07-20 20:33:01 | INFO     |   Step 1: [1] Inspect code structure
+2026-07-20 20:33:01 | INFO     |   Step 2: [2] Scan for unused imports and modules [file_reader]
+2026-07-20 20:33:01 | INFO     |   Step 3: [3] Analyze code metrics (e.g., cyclomatic complexity) [calculator]
+2026-07-20 20:33:01 | INFO     |   Step 4: [4] Check for best practices and coding standards adherence
+2026-07-20 20:33:01 | INFO     |   Step 5: [5] Run code quality checks (e.g., pylint, pyflakes)
+2026-07-20 20:33:01 | INFO     | Executor: starting plan 'Analyze my Python project and tell me what needs improvement'
+2026-07-20 20:33:01 | INFO     | [1/5] Running: Inspect code structure
+2026-07-20 20:33:01 | DEBUG    | Executor: task [1] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:33:01 | INFO     | [1/5] ✓ Completed: Inspect code structure
+2026-07-20 20:33:02 | DEBUG    | EmbeddingService: encoded and cached (cache size: 1).
+2026-07-20 20:33:02 | INFO     | VectorStore: saved index (1 vectors) → memory/vector.index
+2026-07-20 20:33:02 | INFO     | VectorStore: added vector id=0 | 'Task [1] 'Inspect code structure' (completed): Inspect code '
+2026-07-20 20:33:02 | DEBUG    | MemoryManager: stored memory: 'Task [1] 'Inspect code structure' (completed): Inspect code '
+2026-07-20 20:33:02 | DEBUG    | Executor: stored result for task [1].
+2026-07-20 20:33:02 | INFO     | Executor: task [1] completed in 0.000s — Inspect code structure
+2026-07-20 20:33:02 | INFO     | [2/5] Running: Scan for unused imports and modules (tool: file_reader)
+2026-07-20 20:33:02 | INFO     | FileReader reading: for unused imports and modules
+2026-07-20 20:33:02 | WARNING  | File not found: for unused imports and modules
+2026-07-20 20:33:02 | INFO     | [2/5] ✓ Completed: Scan for unused imports and modules
+2026-07-20 20:33:02 | DEBUG    | EmbeddingService: encoded and cached (cache size: 2).
+2026-07-20 20:33:02 | INFO     | VectorStore: saved index (2 vectors) → memory/vector.index
+2026-07-20 20:33:02 | INFO     | VectorStore: added vector id=1 | 'Task [2] 'Scan for unused imports and modules' (completed): '
+2026-07-20 20:33:02 | DEBUG    | MemoryManager: stored memory: 'Task [2] 'Scan for unused imports and modules' (completed): '
+2026-07-20 20:33:02 | DEBUG    | Executor: stored result for task [2].
+2026-07-20 20:33:02 | INFO     | Executor: task [2] completed in 0.001s — Scan for unused imports and modules
+2026-07-20 20:33:02 | INFO     | [3/5] Running: Analyze code metrics (e.g., cyclomatic complexity) (tool: calculator)
+2026-07-20 20:33:02 | INFO     | Calculator expression: analyze code metrics (e.g., cyclomatic complexity)
+2026-07-20 20:33:02 | ERROR    | Calculator failed: invalid syntax (<string>, line 1)
+Traceback (most recent call last):
+  File "C:\Users\aastha gupta\PycharmProjects\PythonProject\IRIS-Intelligent-Reasoning-Information-System\tools\calculator.py", line 32, in execute
+    result = eval(expression)   # noqa: S307
+  File "<string>", line 1
+    analyze code metrics (e.g., cyclomatic complexity)
+            ^^^^
+SyntaxError: invalid syntax
+2026-07-20 20:33:02 | INFO     | [3/5] ✓ Completed: Analyze code metrics (e.g., cyclomatic complexity)
+2026-07-20 20:33:02 | DEBUG    | EmbeddingService: encoded and cached (cache size: 3).
+2026-07-20 20:33:02 | INFO     | VectorStore: saved index (3 vectors) → memory/vector.index
+2026-07-20 20:33:02 | INFO     | VectorStore: added vector id=2 | 'Task [3] 'Analyze code metrics (e.g., cyclomatic complexity)'
+2026-07-20 20:33:02 | DEBUG    | MemoryManager: stored memory: 'Task [3] 'Analyze code metrics (e.g., cyclomatic complexity)'
+2026-07-20 20:33:02 | DEBUG    | Executor: stored result for task [3].
+2026-07-20 20:33:02 | INFO     | Executor: task [3] completed in 0.004s — Analyze code metrics (e.g., cyclomatic complexity)
+2026-07-20 20:33:02 | INFO     | [4/5] Running: Check for best practices and coding standards adherence
+2026-07-20 20:33:02 | DEBUG    | Executor: task [4] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:33:02 | INFO     | [4/5] ✓ Completed: Check for best practices and coding standards adherence
+2026-07-20 20:33:02 | DEBUG    | EmbeddingService: encoded and cached (cache size: 4).
+2026-07-20 20:33:02 | INFO     | VectorStore: saved index (4 vectors) → memory/vector.index
+2026-07-20 20:33:02 | INFO     | VectorStore: added vector id=3 | 'Task [4] 'Check for best practices and coding standards adhe'
+2026-07-20 20:33:02 | DEBUG    | MemoryManager: stored memory: 'Task [4] 'Check for best practices and coding standards adhe'
+2026-07-20 20:33:02 | DEBUG    | Executor: stored result for task [4].
+2026-07-20 20:33:02 | INFO     | Executor: task [4] completed in 0.000s — Check for best practices and coding standards adherence
+2026-07-20 20:33:02 | INFO     | [5/5] Running: Run code quality checks (e.g., pylint, pyflakes)
+2026-07-20 20:33:02 | DEBUG    | Executor: task [5] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:33:02 | INFO     | [5/5] ✓ Completed: Run code quality checks (e.g., pylint, pyflakes)
+2026-07-20 20:33:02 | DEBUG    | EmbeddingService: encoded and cached (cache size: 5).
+2026-07-20 20:33:02 | INFO     | VectorStore: saved index (5 vectors) → memory/vector.index
+2026-07-20 20:33:02 | INFO     | VectorStore: added vector id=4 | 'Task [5] 'Run code quality checks (e.g., pylint, pyflakes)' '
+2026-07-20 20:33:02 | DEBUG    | MemoryManager: stored memory: 'Task [5] 'Run code quality checks (e.g., pylint, pyflakes)' '
+2026-07-20 20:33:02 | DEBUG    | Executor: stored result for task [5].
+2026-07-20 20:33:02 | INFO     | Executor: task [5] completed in 0.001s — Run code quality checks (e.g., pylint, pyflakes)
+2026-07-20 20:33:02 | INFO     | Plan complete — Plan: 'Analyze my Python project and tell me what needs improvement' | 5/5 done (100.0%) | 0 failed | 0 pending
+2026-07-20 20:33:02 | INFO     | Executor: Plan: 'Analyze my Python project and tell me what needs improvement' | 5/5 done (100.0%) | 0 failed | 0 pending
+2026-07-20 20:33:02 | INFO     | Reflection started for plan: 'Analyze my Python project and tell me what needs improvement'
+2026-07-20 20:33:02 | INFO     | Reflection: CONTINUE — Plan 'Analyze my Python project and tell me what needs improvement' completed successfully.
+2026-07-20 20:33:02 | DEBUG    | EmbeddingService: encoded and cached (cache size: 6).
+2026-07-20 20:33:02 | INFO     | VectorStore: saved index (6 vectors) → memory/vector.index
+2026-07-20 20:33:02 | INFO     | VectorStore: added vector id=5 | '[SUCCESS] Plan 'Analyze my Python project and tell me what n'
+2026-07-20 20:33:02 | DEBUG    | MemoryManager: stored memory: '[SUCCESS] Plan 'Analyze my Python project and tell me what n'
+2026-07-20 20:33:02 | DEBUG    | Reflection: stored success record.
+2026-07-20 20:33:02 | INFO     | Reflection: ReflectionOutcome(action=continue, retries=0, reason='Plan 'Analyze my Python project and tell me what needs improvement' completed su')
+2026-07-20 20:33:02 | INFO     | Workflow: goal achieved.
+2026-07-20 20:33:02 | INFO     | ✓ Workflow 82974cca: completed | 'Analyze my Python project and tell me what needs i' | 43.75s | 1 cycle(s)
+2026-07-20 20:33:02 | DEBUG    | EmbeddingService: encoded and cached (cache size: 7).
+2026-07-20 20:33:02 | INFO     | VectorStore: saved index (7 vectors) → memory/vector.index
+2026-07-20 20:33:02 | INFO     | VectorStore: added vector id=6 | '[WORKFLOW] Goal: 'Analyze my Python project and tell me what'
+2026-07-20 20:33:02 | DEBUG    | MemoryManager: stored memory: '[WORKFLOW] Goal: 'Analyze my Python project and tell me what'
+2026-07-20 20:33:02 | DEBUG    | Workflow: history stored.
+2026-07-20 20:33:02 | INFO     | Agent: workflow completed.
+2026-07-20 20:33:02 | DEBUG    | EmbeddingService: encoded and cached (cache size: 8).
+2026-07-20 20:33:02 | INFO     | VectorStore: saved index (8 vectors) → memory/vector.index
+2026-07-20 20:33:02 | INFO     | VectorStore: added vector id=7 | '[AGENT SUCCESS] Goal: 'Analyze my Python project and tell me'
+2026-07-20 20:33:02 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'Analyze my Python project and tell me'
+2026-07-20 20:33:02 | DEBUG    | Agent: learned from success experience.
+2026-07-20 20:33:02 | INFO     | IRIS: Inspect code structure
+File not found.
+Invalid expression.
+Check for best practices and coding standards adherence
+Run c
+2026-07-20 20:33:02 | DEBUG    | Speaking: Inspect code structure
+File not found.
+Invalid expression.
+Check for best practi...
+2026-07-20 20:35:04 | INFO     | User: what is the capital of india
+2026-07-20 20:35:04 | INFO     | Agent: received goal — 'what is the capital of india'
+2026-07-20 20:35:04 | INFO     | Agent: iteration 1/5 — 'what is the capital of india'
+2026-07-20 20:35:04 | INFO     | Searching memory for: 'what is the capital of india'
+2026-07-20 20:35:04 | DEBUG    | EmbeddingService: encoded and cached (cache size: 9).
+2026-07-20 20:35:04 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:35:04 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:35:04 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:35:04 | INFO     | Retrieved 0 memories.
+2026-07-20 20:35:04 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 20:35:04 | INFO     | Agent: decision = direct
+2026-07-20 20:35:04 | INFO     | Sending prompt to LLM...
+2026-07-20 20:35:04 | DEBUG    | History: returning 0 messages (0 turns).
+2026-07-20 20:35:04 | DEBUG    | MemoryManager: loaded 0 history messages.
+2026-07-20 20:35:04 | INFO     | Searching memory for: 'what is the capital of india'
+2026-07-20 20:35:04 | DEBUG    | EmbeddingService: cache hit.
+2026-07-20 20:35:04 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:35:04 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:35:04 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:35:04 | INFO     | Retrieved 0 memories.
+2026-07-20 20:35:04 | INFO     | Building prompt...
+2026-07-20 20:35:04 | INFO     | Added 0 chat messages.
+2026-07-20 20:35:04 | INFO     | Final prompt ready.
+2026-07-20 20:35:04 | DEBUG    | ContextBuilder summary — memories: 0, history messages: 0, total blocks: 2, ~1 tokens.
+2026-07-20 20:35:09 | DEBUG    | History: turn recorded at 2026-07-20 20:35:09
+2026-07-20 20:35:09 | DEBUG    | Storage.append → memory/history.json (1 entries)
+2026-07-20 20:35:09 | DEBUG    | EmbeddingService: encoded and cached (cache size: 10).
+2026-07-20 20:35:09 | INFO     | VectorStore: saved index (9 vectors) → memory/vector.index
+2026-07-20 20:35:09 | INFO     | VectorStore: added vector id=8 | 'User: what is the capital of india
+Assistant: Hello! I'm IRI'
+2026-07-20 20:35:09 | DEBUG    | MemoryManager: conversation saved.
+2026-07-20 20:35:09 | INFO     | Response received successfully.
+2026-07-20 20:35:09 | INFO     | Agent: LLM response received.
+2026-07-20 20:35:09 | DEBUG    | EmbeddingService: encoded and cached (cache size: 11).
+2026-07-20 20:35:09 | INFO     | VectorStore: saved index (10 vectors) → memory/vector.index
+2026-07-20 20:35:09 | INFO     | VectorStore: added vector id=9 | '[AGENT SUCCESS] Goal: 'what is the capital of india' | Outpu'
+2026-07-20 20:35:09 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'what is the capital of india' | Outpu'
+2026-07-20 20:35:09 | DEBUG    | Agent: learned from success experience.
+2026-07-20 20:35:09 | INFO     | IRIS: Hello! I'm IRIS, here to help. The capital of India is New Delhi.
+2026-07-20 20:35:09 | DEBUG    | Speaking: Hello! I'm IRIS, here to help. The capital of India is New Delhi.
+2026-07-20 20:36:31 | INFO     | User: what is the wavelength of red light in cm
+2026-07-20 20:36:31 | INFO     | Agent: received goal — 'what is the wavelength of red light in cm'
+2026-07-20 20:36:31 | INFO     | Agent: iteration 1/5 — 'what is the wavelength of red light in cm'
+2026-07-20 20:36:31 | INFO     | Searching memory for: 'what is the wavelength of red light in cm'
+2026-07-20 20:36:31 | DEBUG    | EmbeddingService: encoded and cached (cache size: 12).
+2026-07-20 20:36:31 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:36:31 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:36:31 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:36:31 | INFO     | Retrieved 0 memories.
+2026-07-20 20:36:31 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 20:36:31 | INFO     | Agent: decision = direct
+2026-07-20 20:36:31 | INFO     | Sending prompt to LLM...
+2026-07-20 20:36:31 | DEBUG    | History: returning 2 messages (1 turns).
+2026-07-20 20:36:31 | DEBUG    | MemoryManager: loaded 2 history messages.
+2026-07-20 20:36:31 | INFO     | Searching memory for: 'what is the wavelength of red light in cm'
+2026-07-20 20:36:31 | DEBUG    | EmbeddingService: cache hit.
+2026-07-20 20:36:31 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:36:31 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:36:31 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:36:31 | INFO     | Retrieved 0 memories.
+2026-07-20 20:36:31 | INFO     | Building prompt...
+2026-07-20 20:36:31 | INFO     | Added 2 chat messages.
+2026-07-20 20:36:31 | INFO     | Final prompt ready.
+2026-07-20 20:36:31 | DEBUG    | ContextBuilder summary — memories: 0, history messages: 2, total blocks: 4, ~1 tokens.
+2026-07-20 20:36:40 | DEBUG    | History: turn recorded at 2026-07-20 20:36:40
+2026-07-20 20:36:40 | DEBUG    | Storage.append → memory/history.json (2 entries)
+2026-07-20 20:36:41 | DEBUG    | EmbeddingService: encoded and cached (cache size: 13).
+2026-07-20 20:36:41 | INFO     | VectorStore: saved index (11 vectors) → memory/vector.index
+2026-07-20 20:36:41 | INFO     | VectorStore: added vector id=10 | 'User: what is the wavelength of red light in cm
+Assistant: T'
+2026-07-20 20:36:41 | DEBUG    | MemoryManager: conversation saved.
+2026-07-20 20:36:41 | INFO     | Response received successfully.
+2026-07-20 20:36:41 | INFO     | Agent: LLM response received.
+2026-07-20 20:36:41 | DEBUG    | EmbeddingService: encoded and cached (cache size: 14).
+2026-07-20 20:36:41 | INFO     | VectorStore: saved index (12 vectors) → memory/vector.index
+2026-07-20 20:36:41 | INFO     | VectorStore: added vector id=11 | '[AGENT SUCCESS] Goal: 'what is the wavelength of red light i'
+2026-07-20 20:36:41 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'what is the wavelength of red light i'
+2026-07-20 20:36:41 | DEBUG    | Agent: learned from success experience.
+2026-07-20 20:36:41 | INFO     | IRIS: The wavelength of red light is approximately 620-750 nanometers (nm). To convert this to centimeters, we can use the con
+2026-07-20 20:36:41 | DEBUG    | Speaking: The wavelength of red light is approximately 620-750 nanometers (nm). To convert...
+2026-07-20 20:37:16 | INFO     | User: Calculate (234*87)/12
+2026-07-20 20:37:16 | INFO     | Agent: received goal — 'Calculate (234*87)/12'
+2026-07-20 20:37:16 | INFO     | Agent: iteration 1/5 — 'Calculate (234*87)/12'
+2026-07-20 20:37:16 | INFO     | Searching memory for: 'Calculate (234*87)/12'
+2026-07-20 20:37:17 | DEBUG    | EmbeddingService: encoded and cached (cache size: 15).
+2026-07-20 20:37:17 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:37:17 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:37:17 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:37:17 | INFO     | Retrieved 0 memories.
+2026-07-20 20:37:17 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 20:37:17 | INFO     | Agent: decision = tool
+2026-07-20 20:37:17 | INFO     | Tool selected: calculator
+2026-07-20 20:37:17 | INFO     | Calculator expression: (234*87)/12
+2026-07-20 20:37:17 | INFO     | Calculator result: 1696.5
+2026-07-20 20:37:17 | INFO     | Tool 'calculator' executed successfully.
+2026-07-20 20:37:17 | INFO     | Agent: tool executed successfully.
+2026-07-20 20:37:17 | DEBUG    | EmbeddingService: encoded and cached (cache size: 16).
+2026-07-20 20:37:17 | INFO     | VectorStore: saved index (13 vectors) → memory/vector.index
+2026-07-20 20:37:17 | INFO     | VectorStore: added vector id=12 | '[AGENT SUCCESS] Goal: 'Calculate (234*87)/12' | Output: '169'
+2026-07-20 20:37:17 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'Calculate (234*87)/12' | Output: '169'
+2026-07-20 20:37:17 | DEBUG    | Agent: learned from success experience.
+2026-07-20 20:37:17 | INFO     | IRIS: 1696.5
+2026-07-20 20:37:17 | DEBUG    | Speaking: 1696.5
+2026-07-20 20:37:28 | INFO     | User: Hello
+2026-07-20 20:37:28 | INFO     | Agent: received goal — 'Hello'
+2026-07-20 20:37:28 | INFO     | Agent: iteration 1/5 — 'Hello'
+2026-07-20 20:37:28 | INFO     | Searching memory for: 'Hello'
+2026-07-20 20:37:28 | DEBUG    | EmbeddingService: encoded and cached (cache size: 17).
+2026-07-20 20:37:28 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:37:28 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:37:28 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:37:28 | INFO     | Retrieved 0 memories.
+2026-07-20 20:37:28 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 20:37:28 | INFO     | Agent: decision = direct
+2026-07-20 20:37:28 | INFO     | Sending prompt to LLM...
+2026-07-20 20:37:28 | DEBUG    | History: returning 4 messages (2 turns).
+2026-07-20 20:37:28 | DEBUG    | MemoryManager: loaded 4 history messages.
+2026-07-20 20:37:28 | INFO     | Searching memory for: 'Hello'
+2026-07-20 20:37:28 | DEBUG    | EmbeddingService: cache hit.
+2026-07-20 20:37:28 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:37:28 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:37:28 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:37:28 | INFO     | Retrieved 0 memories.
+2026-07-20 20:37:28 | INFO     | Building prompt...
+2026-07-20 20:37:28 | INFO     | Added 4 chat messages.
+2026-07-20 20:37:28 | INFO     | Final prompt ready.
+2026-07-20 20:37:28 | DEBUG    | ContextBuilder summary — memories: 0, history messages: 4, total blocks: 6, ~1 tokens.
+2026-07-20 20:37:33 | DEBUG    | History: turn recorded at 2026-07-20 20:37:33
+2026-07-20 20:37:33 | DEBUG    | Storage.append → memory/history.json (3 entries)
+2026-07-20 20:37:33 | DEBUG    | EmbeddingService: encoded and cached (cache size: 18).
+2026-07-20 20:37:33 | INFO     | VectorStore: saved index (14 vectors) → memory/vector.index
+2026-07-20 20:37:33 | INFO     | VectorStore: added vector id=13 | 'User: Hello
+Assistant: Hello! It's nice to meet you. I'm IRI'
+2026-07-20 20:37:33 | DEBUG    | MemoryManager: conversation saved.
+2026-07-20 20:37:33 | INFO     | Response received successfully.
+2026-07-20 20:37:33 | INFO     | Agent: LLM response received.
+2026-07-20 20:37:33 | DEBUG    | EmbeddingService: encoded and cached (cache size: 19).
+2026-07-20 20:37:33 | INFO     | VectorStore: saved index (15 vectors) → memory/vector.index
+2026-07-20 20:37:33 | INFO     | VectorStore: added vector id=14 | '[AGENT SUCCESS] Goal: 'Hello' | Output: 'Hello! It's nice to'
+2026-07-20 20:37:33 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'Hello' | Output: 'Hello! It's nice to'
+2026-07-20 20:37:33 | DEBUG    | Agent: learned from success experience.
+2026-07-20 20:37:33 | INFO     | IRIS: Hello! It's nice to meet you. I'm IRIS, here to help answer any questions or provide information on a wide range of topi
+2026-07-20 20:37:33 | DEBUG    | Speaking: Hello! It's nice to meet you. I'm IRIS, here to help answer any questions or pro...
+2026-07-20 20:37:48 | INFO     | User: Read README.md
+2026-07-20 20:37:48 | INFO     | Agent: received goal — 'Read README.md'
+2026-07-20 20:37:48 | INFO     | Agent: iteration 1/5 — 'Read README.md'
+2026-07-20 20:37:48 | INFO     | Searching memory for: 'Read README.md'
+2026-07-20 20:37:48 | DEBUG    | EmbeddingService: encoded and cached (cache size: 20).
+2026-07-20 20:37:48 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:37:48 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:37:48 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:37:48 | INFO     | Retrieved 0 memories.
+2026-07-20 20:37:48 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 20:37:48 | INFO     | Agent: decision = tool
+2026-07-20 20:37:48 | INFO     | Tool selected: file_reader
+2026-07-20 20:37:48 | INFO     | FileReader reading: README.md
+2026-07-20 20:37:48 | INFO     | FileReader successfully read: README.md
+2026-07-20 20:37:48 | INFO     | Tool 'file_reader' executed successfully.
+2026-07-20 20:37:48 | INFO     | Agent: tool executed successfully.
+2026-07-20 20:37:48 | DEBUG    | EmbeddingService: encoded and cached (cache size: 21).
+2026-07-20 20:37:49 | INFO     | VectorStore: saved index (16 vectors) → memory/vector.index
+2026-07-20 20:37:49 | INFO     | VectorStore: added vector id=15 | '[AGENT SUCCESS] Goal: 'Read README.md' | Output: '# IRIS — I'
+2026-07-20 20:37:49 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'Read README.md' | Output: '# IRIS — I'
+2026-07-20 20:37:49 | DEBUG    | Agent: learned from success experience.
+2026-07-20 20:37:49 | INFO     | IRIS: # IRIS — Intelligent Reasoning Information System
+
+A modular, local-first AI assistant built in Python.  
+IRIS runs enti
+2026-07-20 20:37:49 | DEBUG    | Speaking: # IRIS — Intelligent Reasoning Information System
+
+A modular, local-first AI ass...
+2026-07-20 20:38:12 | INFO     | User: Search for the latest Python 3.14 features.
+2026-07-20 20:38:12 | INFO     | Agent: received goal — 'Search for the latest Python 3.14 features.'
+2026-07-20 20:38:12 | INFO     | Agent: iteration 1/5 — 'Search for the latest Python 3.14 features.'
+2026-07-20 20:38:12 | INFO     | Searching memory for: 'Search for the latest Python 3.14 features.'
+2026-07-20 20:38:12 | DEBUG    | EmbeddingService: encoded and cached (cache size: 22).
+2026-07-20 20:38:12 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:38:12 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:38:12 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:38:12 | INFO     | Retrieved 0 memories.
+2026-07-20 20:38:12 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 20:38:12 | INFO     | Agent: decision = tool
+2026-07-20 20:38:12 | DEBUG    | No tool matched the query.
+2026-07-20 20:38:12 | DEBUG    | Agent: no tool matched, falling back to LLM.
+2026-07-20 20:38:12 | INFO     | Sending prompt to LLM...
+2026-07-20 20:38:12 | DEBUG    | History: returning 6 messages (3 turns).
+2026-07-20 20:38:12 | DEBUG    | MemoryManager: loaded 6 history messages.
+2026-07-20 20:38:12 | INFO     | Searching memory for: 'Search for the latest Python 3.14 features.'
+2026-07-20 20:38:12 | DEBUG    | EmbeddingService: cache hit.
+2026-07-20 20:38:12 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:38:12 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:38:12 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:38:12 | INFO     | Retrieved 0 memories.
+2026-07-20 20:38:12 | INFO     | Building prompt...
+2026-07-20 20:38:12 | INFO     | Added 6 chat messages.
+2026-07-20 20:38:12 | INFO     | Final prompt ready.
+2026-07-20 20:38:12 | DEBUG    | ContextBuilder summary — memories: 0, history messages: 6, total blocks: 8, ~1 tokens.
+2026-07-20 20:38:36 | DEBUG    | History: turn recorded at 2026-07-20 20:38:36
+2026-07-20 20:38:36 | DEBUG    | Storage.append → memory/history.json (4 entries)
+2026-07-20 20:38:36 | DEBUG    | EmbeddingService: encoded and cached (cache size: 23).
+2026-07-20 20:38:36 | INFO     | VectorStore: saved index (17 vectors) → memory/vector.index
+2026-07-20 20:38:36 | INFO     | VectorStore: added vector id=16 | 'User: Search for the latest Python 3.14 features.
+Assistant:'
+2026-07-20 20:38:36 | DEBUG    | MemoryManager: conversation saved.
+2026-07-20 20:38:36 | INFO     | Response received successfully.
+2026-07-20 20:38:36 | INFO     | Agent: LLM response received.
+2026-07-20 20:38:36 | DEBUG    | EmbeddingService: encoded and cached (cache size: 24).
+2026-07-20 20:38:36 | INFO     | VectorStore: saved index (18 vectors) → memory/vector.index
+2026-07-20 20:38:36 | INFO     | VectorStore: added vector id=17 | '[AGENT SUCCESS] Goal: 'Search for the latest Python 3.14 fea'
+2026-07-20 20:38:36 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'Search for the latest Python 3.14 fea'
+2026-07-20 20:38:36 | DEBUG    | Agent: learned from success experience.
+2026-07-20 20:38:36 | INFO     | IRIS: I think there may be some confusion. There is no official Python release called "Python 3.14". The latest version of Pyt
+2026-07-20 20:38:36 | DEBUG    | Speaking: I think there may be some confusion. There is no official Python release called ...
+2026-07-20 20:39:15 | INFO     | User: Analyze this repository and summarize its architecture.
+2026-07-20 20:39:15 | INFO     | Agent: received goal — 'Analyze this repository and summarize its architecture.'
+2026-07-20 20:39:15 | INFO     | Agent: iteration 1/5 — 'Analyze this repository and summarize its architecture.'
+2026-07-20 20:39:15 | INFO     | Searching memory for: 'Analyze this repository and summarize its architecture.'
+2026-07-20 20:39:15 | DEBUG    | EmbeddingService: encoded and cached (cache size: 25).
+2026-07-20 20:39:15 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:39:15 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:39:15 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:39:15 | INFO     | Retrieved 0 memories.
+2026-07-20 20:39:15 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 20:39:15 | INFO     | Agent: decision = plan
+2026-07-20 20:39:15 | INFO     | Workflow started: 'Analyze this repository and summarize its architecture.'
+2026-07-20 20:39:15 | INFO     | Workflow cycle 1/10
+2026-07-20 20:39:15 | INFO     | Planner: goal = 'Analyze this repository and summarize its architecture.'
+2026-07-20 20:39:15 | DEBUG    | Planner: attempt 1/3
+2026-07-20 20:39:48 | INFO     | Plan validation passed.
+2026-07-20 20:39:48 | INFO     | Plan created: 5 task(s) for 'Analyze this repository and summarize its architecture.'
+2026-07-20 20:39:48 | INFO     | Execution order:
+2026-07-20 20:39:48 | INFO     |   Step 1: [1] Get a list of files in the repository
+2026-07-20 20:39:48 | INFO     |   Step 2: [2] Scan each file for source code [file_reader]
+2026-07-20 20:39:48 | INFO     |   Step 3: [3] Build a dependency graph from the source code
+2026-07-20 20:39:48 | INFO     |   Step 4: [4] Analyze the dependency graph to identify key components
+2026-07-20 20:39:48 | INFO     |   Step 5: [5] Use language generation to summarize the architecture [llm]
+2026-07-20 20:39:48 | INFO     | Executor: starting plan 'Analyze this repository and summarize its architecture.'
+2026-07-20 20:39:48 | INFO     | [1/5] Running: Get a list of files in the repository
+2026-07-20 20:39:48 | DEBUG    | Executor: task [1] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:39:48 | INFO     | [1/5] ✓ Completed: Get a list of files in the repository
+2026-07-20 20:39:48 | DEBUG    | EmbeddingService: encoded and cached (cache size: 26).
+2026-07-20 20:39:48 | INFO     | VectorStore: saved index (19 vectors) → memory/vector.index
+2026-07-20 20:39:48 | INFO     | VectorStore: added vector id=18 | 'Task [1] 'Get a list of files in the repository' (completed)'
+2026-07-20 20:39:48 | DEBUG    | MemoryManager: stored memory: 'Task [1] 'Get a list of files in the repository' (completed)'
+2026-07-20 20:39:48 | DEBUG    | Executor: stored result for task [1].
+2026-07-20 20:39:48 | INFO     | Executor: task [1] completed in 0.000s — Get a list of files in the repository
+2026-07-20 20:39:48 | INFO     | [2/5] Running: Scan each file for source code (tool: file_reader)
+2026-07-20 20:39:48 | INFO     | FileReader reading: each file for source code
+2026-07-20 20:39:48 | WARNING  | File not found: each file for source code
+2026-07-20 20:39:48 | INFO     | [2/5] ✓ Completed: Scan each file for source code
+2026-07-20 20:39:48 | DEBUG    | EmbeddingService: encoded and cached (cache size: 27).
+2026-07-20 20:39:48 | INFO     | VectorStore: saved index (20 vectors) → memory/vector.index
+2026-07-20 20:39:48 | INFO     | VectorStore: added vector id=19 | 'Task [2] 'Scan each file for source code' (completed): File '
+2026-07-20 20:39:48 | DEBUG    | MemoryManager: stored memory: 'Task [2] 'Scan each file for source code' (completed): File '
+2026-07-20 20:39:48 | DEBUG    | Executor: stored result for task [2].
+2026-07-20 20:39:48 | INFO     | Executor: task [2] completed in 0.001s — Scan each file for source code
+2026-07-20 20:39:48 | INFO     | [3/5] Running: Build a dependency graph from the source code
+2026-07-20 20:39:48 | DEBUG    | Executor: task [3] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:39:48 | INFO     | [3/5] ✓ Completed: Build a dependency graph from the source code
+2026-07-20 20:39:48 | DEBUG    | EmbeddingService: encoded and cached (cache size: 28).
+2026-07-20 20:39:48 | INFO     | VectorStore: saved index (21 vectors) → memory/vector.index
+2026-07-20 20:39:48 | INFO     | VectorStore: added vector id=20 | 'Task [3] 'Build a dependency graph from the source code' (co'
+2026-07-20 20:39:48 | DEBUG    | MemoryManager: stored memory: 'Task [3] 'Build a dependency graph from the source code' (co'
+2026-07-20 20:39:48 | DEBUG    | Executor: stored result for task [3].
+2026-07-20 20:39:48 | INFO     | Executor: task [3] completed in 0.000s — Build a dependency graph from the source code
+2026-07-20 20:39:48 | INFO     | [4/5] Running: Analyze the dependency graph to identify key components
+2026-07-20 20:39:48 | DEBUG    | Executor: task [4] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:39:48 | INFO     | [4/5] ✓ Completed: Analyze the dependency graph to identify key components
+2026-07-20 20:39:48 | DEBUG    | EmbeddingService: encoded and cached (cache size: 29).
+2026-07-20 20:39:48 | INFO     | VectorStore: saved index (22 vectors) → memory/vector.index
+2026-07-20 20:39:48 | INFO     | VectorStore: added vector id=21 | 'Task [4] 'Analyze the dependency graph to identify key compo'
+2026-07-20 20:39:48 | DEBUG    | MemoryManager: stored memory: 'Task [4] 'Analyze the dependency graph to identify key compo'
+2026-07-20 20:39:48 | DEBUG    | Executor: stored result for task [4].
+2026-07-20 20:39:48 | INFO     | Executor: task [4] completed in 0.000s — Analyze the dependency graph to identify key components
+2026-07-20 20:39:48 | INFO     | [5/5] Running: Use language generation to summarize the architecture (tool: llm)
+2026-07-20 20:39:48 | DEBUG    | Executor: task [5] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:39:48 | INFO     | [5/5] ✓ Completed: Use language generation to summarize the architecture
+2026-07-20 20:39:48 | DEBUG    | EmbeddingService: encoded and cached (cache size: 30).
+2026-07-20 20:39:48 | INFO     | VectorStore: saved index (23 vectors) → memory/vector.index
+2026-07-20 20:39:48 | INFO     | VectorStore: added vector id=22 | 'Task [5] 'Use language generation to summarize the architect'
+2026-07-20 20:39:48 | DEBUG    | MemoryManager: stored memory: 'Task [5] 'Use language generation to summarize the architect'
+2026-07-20 20:39:48 | DEBUG    | Executor: stored result for task [5].
+2026-07-20 20:39:48 | INFO     | Executor: task [5] completed in 0.000s — Use language generation to summarize the architecture
+2026-07-20 20:39:48 | INFO     | Plan complete — Plan: 'Analyze this repository and summarize its architecture.' | 5/5 done (100.0%) | 0 failed | 0 pending
+2026-07-20 20:39:48 | INFO     | Executor: Plan: 'Analyze this repository and summarize its architecture.' | 5/5 done (100.0%) | 0 failed | 0 pending
+2026-07-20 20:39:48 | INFO     | Reflection started for plan: 'Analyze this repository and summarize its architecture.'
+2026-07-20 20:39:48 | INFO     | Reflection: CONTINUE — Plan 'Analyze this repository and summarize its architecture.' completed successfully.
+2026-07-20 20:39:48 | DEBUG    | EmbeddingService: encoded and cached (cache size: 31).
+2026-07-20 20:39:48 | INFO     | VectorStore: saved index (24 vectors) → memory/vector.index
+2026-07-20 20:39:48 | INFO     | VectorStore: added vector id=23 | '[SUCCESS] Plan 'Analyze this repository and summarize its ar'
+2026-07-20 20:39:48 | DEBUG    | MemoryManager: stored memory: '[SUCCESS] Plan 'Analyze this repository and summarize its ar'
+2026-07-20 20:39:48 | DEBUG    | Reflection: stored success record.
+2026-07-20 20:39:48 | INFO     | Reflection: ReflectionOutcome(action=continue, retries=0, reason='Plan 'Analyze this repository and summarize its architecture.' completed success')
+2026-07-20 20:39:48 | INFO     | Workflow: goal achieved.
+2026-07-20 20:39:48 | INFO     | ✓ Workflow c281a7d9: completed | 'Analyze this repository and summarize its architec' | 32.45s | 1 cycle(s)
+2026-07-20 20:39:48 | DEBUG    | EmbeddingService: encoded and cached (cache size: 32).
+2026-07-20 20:39:48 | INFO     | VectorStore: saved index (25 vectors) → memory/vector.index
+2026-07-20 20:39:48 | INFO     | VectorStore: added vector id=24 | '[WORKFLOW] Goal: 'Analyze this repository and summarize its '
+2026-07-20 20:39:48 | DEBUG    | MemoryManager: stored memory: '[WORKFLOW] Goal: 'Analyze this repository and summarize its '
+2026-07-20 20:39:48 | DEBUG    | Workflow: history stored.
+2026-07-20 20:39:48 | INFO     | Agent: workflow completed.
+2026-07-20 20:39:48 | DEBUG    | EmbeddingService: encoded and cached (cache size: 33).
+2026-07-20 20:39:48 | INFO     | VectorStore: saved index (26 vectors) → memory/vector.index
+2026-07-20 20:39:48 | INFO     | VectorStore: added vector id=25 | '[AGENT SUCCESS] Goal: 'Analyze this repository and summarize'
+2026-07-20 20:39:48 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'Analyze this repository and summarize'
+2026-07-20 20:39:48 | DEBUG    | Agent: learned from success experience.
+2026-07-20 20:39:48 | INFO     | IRIS: Get a list of files in the repository
+File not found.
+Build a dependency graph from the source code
+Analyze the dependen
+2026-07-20 20:39:48 | DEBUG    | Speaking: Get a list of files in the repository
+File not found.
+Build a dependency graph f...
+2026-07-20 20:40:05 | INFO     | User: Analyze my project, identify unused files, summarize the architecture, and recommend improvements.
+2026-07-20 20:40:05 | INFO     | Agent: received goal — 'Analyze my project, identify unused files, summarize the architecture, and recom'
+2026-07-20 20:40:05 | INFO     | Agent: iteration 1/5 — 'Analyze my project, identify unused files, summarize the arc'
+2026-07-20 20:40:05 | INFO     | Searching memory for: 'Analyze my project, identify unused files, summarize the arc'
+2026-07-20 20:40:05 | DEBUG    | EmbeddingService: encoded and cached (cache size: 34).
+2026-07-20 20:40:05 | INFO     | VectorStore: search returned 3 results.
+2026-07-20 20:40:05 | INFO     | Retrieved 3 candidates from vector store.
+2026-07-20 20:40:05 | INFO     | No relevant memories found — all candidates below threshold.
+2026-07-20 20:40:05 | INFO     | Retrieved 0 memories.
+2026-07-20 20:40:05 | DEBUG    | Agent: context loaded (0 memories).
+2026-07-20 20:40:05 | INFO     | Agent: decision = plan
+2026-07-20 20:40:05 | INFO     | Workflow started: 'Analyze my project, identify unused files, summarize the architecture, and recom'
+2026-07-20 20:40:05 | INFO     | Workflow cycle 1/10
+2026-07-20 20:40:05 | INFO     | Planner: goal = 'Analyze my project, identify unused files, summarize the architecture, and recom'
+2026-07-20 20:40:05 | DEBUG    | Planner: attempt 1/3
+2026-07-20 20:40:37 | INFO     | Plan validation passed.
+2026-07-20 20:40:37 | INFO     | Plan created: 6 task(s) for 'Analyze my project, identify unused files, summarize the arc'
+2026-07-20 20:40:37 | INFO     | Execution order:
+2026-07-20 20:40:37 | INFO     |   Step 1: [1] Project Overview
+2026-07-20 20:40:37 | INFO     |   Step 2: [2] Get Project Structure Information [project_scanner]
+2026-07-20 20:40:37 | INFO     |   Step 3: [3] Identify Unused Files [file_reader]
+2026-07-20 20:40:37 | INFO     |   Step 4: [4] Summarize Architecture
+2026-07-20 20:40:37 | INFO     |   Step 5: [5] Generate Summary Report [llm]
+2026-07-20 20:40:37 | INFO     |   Step 6: [6] Analyze Architecture for Improvements
+2026-07-20 20:40:37 | INFO     | Executor: starting plan 'Analyze my project, identify unused files, summarize the arc'
+2026-07-20 20:40:37 | INFO     | [1/6] Running: Project Overview
+2026-07-20 20:40:37 | DEBUG    | Executor: task [1] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:40:37 | INFO     | [1/6] ✓ Completed: Project Overview
+2026-07-20 20:40:37 | DEBUG    | EmbeddingService: encoded and cached (cache size: 35).
+2026-07-20 20:40:37 | INFO     | VectorStore: saved index (27 vectors) → memory/vector.index
+2026-07-20 20:40:37 | INFO     | VectorStore: added vector id=26 | 'Task [1] 'Project Overview' (completed): Project Overview'
+2026-07-20 20:40:37 | DEBUG    | MemoryManager: stored memory: 'Task [1] 'Project Overview' (completed): Project Overview'
+2026-07-20 20:40:37 | DEBUG    | Executor: stored result for task [1].
+2026-07-20 20:40:37 | INFO     | Executor: task [1] completed in 0.000s — Project Overview
+2026-07-20 20:40:37 | INFO     | [2/6] Running: Get Project Structure Information (tool: project_scanner)
+2026-07-20 20:40:37 | INFO     | ProjectScanner scanning: roject Structure Information
+2026-07-20 20:40:37 | WARNING  | Folder not found: roject Structure Information
+2026-07-20 20:40:37 | INFO     | [2/6] ✓ Completed: Get Project Structure Information
+2026-07-20 20:40:37 | DEBUG    | EmbeddingService: encoded and cached (cache size: 36).
+2026-07-20 20:40:37 | INFO     | VectorStore: saved index (28 vectors) → memory/vector.index
+2026-07-20 20:40:37 | INFO     | VectorStore: added vector id=27 | 'Task [2] 'Get Project Structure Information' (completed): Fo'
+2026-07-20 20:40:37 | DEBUG    | MemoryManager: stored memory: 'Task [2] 'Get Project Structure Information' (completed): Fo'
+2026-07-20 20:40:37 | DEBUG    | Executor: stored result for task [2].
+2026-07-20 20:40:37 | INFO     | Executor: task [2] completed in 0.001s — Get Project Structure Information
+2026-07-20 20:40:37 | INFO     | [3/6] Running: Identify Unused Files (tool: file_reader)
+2026-07-20 20:40:37 | INFO     | FileReader reading: ify Unused Files
+2026-07-20 20:40:37 | WARNING  | File not found: ify Unused Files
+2026-07-20 20:40:37 | INFO     | [3/6] ✓ Completed: Identify Unused Files
+2026-07-20 20:40:37 | DEBUG    | EmbeddingService: encoded and cached (cache size: 37).
+2026-07-20 20:40:37 | INFO     | VectorStore: saved index (29 vectors) → memory/vector.index
+2026-07-20 20:40:37 | INFO     | VectorStore: added vector id=28 | 'Task [3] 'Identify Unused Files' (completed): File not found'
+2026-07-20 20:40:37 | DEBUG    | MemoryManager: stored memory: 'Task [3] 'Identify Unused Files' (completed): File not found'
+2026-07-20 20:40:37 | DEBUG    | Executor: stored result for task [3].
+2026-07-20 20:40:37 | INFO     | Executor: task [3] completed in 0.001s — Identify Unused Files
+2026-07-20 20:40:37 | INFO     | [4/6] Running: Summarize Architecture
+2026-07-20 20:40:37 | DEBUG    | Executor: task [4] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:40:37 | INFO     | [4/6] ✓ Completed: Summarize Architecture
+2026-07-20 20:40:37 | DEBUG    | EmbeddingService: encoded and cached (cache size: 38).
+2026-07-20 20:40:37 | INFO     | VectorStore: saved index (30 vectors) → memory/vector.index
+2026-07-20 20:40:37 | INFO     | VectorStore: added vector id=29 | 'Task [4] 'Summarize Architecture' (completed): Summarize Arc'
+2026-07-20 20:40:37 | DEBUG    | MemoryManager: stored memory: 'Task [4] 'Summarize Architecture' (completed): Summarize Arc'
+2026-07-20 20:40:37 | DEBUG    | Executor: stored result for task [4].
+2026-07-20 20:40:37 | INFO     | Executor: task [4] completed in 0.000s — Summarize Architecture
+2026-07-20 20:40:37 | INFO     | [5/6] Running: Generate Summary Report (tool: llm)
+2026-07-20 20:40:37 | DEBUG    | Executor: task [5] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:40:37 | INFO     | [5/6] ✓ Completed: Generate Summary Report
+2026-07-20 20:40:37 | DEBUG    | EmbeddingService: encoded and cached (cache size: 39).
+2026-07-20 20:40:37 | INFO     | VectorStore: saved index (31 vectors) → memory/vector.index
+2026-07-20 20:40:37 | INFO     | VectorStore: added vector id=30 | 'Task [5] 'Generate Summary Report' (completed): Generate Sum'
+2026-07-20 20:40:37 | DEBUG    | MemoryManager: stored memory: 'Task [5] 'Generate Summary Report' (completed): Generate Sum'
+2026-07-20 20:40:37 | DEBUG    | Executor: stored result for task [5].
+2026-07-20 20:40:37 | INFO     | Executor: task [5] completed in 0.000s — Generate Summary Report
+2026-07-20 20:40:37 | INFO     | [6/6] Running: Analyze Architecture for Improvements
+2026-07-20 20:40:37 | DEBUG    | Executor: task [6] is an LLM/reasoning step — no tool dispatch needed.
+2026-07-20 20:40:37 | INFO     | [6/6] ✓ Completed: Analyze Architecture for Improvements
+2026-07-20 20:40:37 | DEBUG    | EmbeddingService: encoded and cached (cache size: 40).
+2026-07-20 20:40:37 | INFO     | VectorStore: saved index (32 vectors) → memory/vector.index
+2026-07-20 20:40:37 | INFO     | VectorStore: added vector id=31 | 'Task [6] 'Analyze Architecture for Improvements' (completed)'
+2026-07-20 20:40:37 | DEBUG    | MemoryManager: stored memory: 'Task [6] 'Analyze Architecture for Improvements' (completed)'
+2026-07-20 20:40:37 | DEBUG    | Executor: stored result for task [6].
+2026-07-20 20:40:37 | INFO     | Executor: task [6] completed in 0.000s — Analyze Architecture for Improvements
+2026-07-20 20:40:37 | INFO     | Plan complete — Plan: 'Analyze my project, identify unused files, summarize the arc' | 6/6 done (100.0%) | 0 failed | 0 pending
+2026-07-20 20:40:37 | INFO     | Executor: Plan: 'Analyze my project, identify unused files, summarize the arc' | 6/6 done (100.0%) | 0 failed | 0 pending
+2026-07-20 20:40:37 | INFO     | Reflection started for plan: 'Analyze my project, identify unused files, summarize the arc'
+2026-07-20 20:40:37 | INFO     | Reflection: CONTINUE — Plan 'Analyze my project, identify unused files, summarize the arc' completed successfully.
+2026-07-20 20:40:37 | DEBUG    | EmbeddingService: encoded and cached (cache size: 41).
+2026-07-20 20:40:37 | INFO     | VectorStore: saved index (33 vectors) → memory/vector.index
+2026-07-20 20:40:37 | INFO     | VectorStore: added vector id=32 | '[SUCCESS] Plan 'Analyze my project, identify unused files, s'
+2026-07-20 20:40:37 | DEBUG    | MemoryManager: stored memory: '[SUCCESS] Plan 'Analyze my project, identify unused files, s'
+2026-07-20 20:40:37 | DEBUG    | Reflection: stored success record.
+2026-07-20 20:40:37 | INFO     | Reflection: ReflectionOutcome(action=continue, retries=0, reason='Plan 'Analyze my project, identify unused files, summarize the arc' completed su')
+2026-07-20 20:40:37 | INFO     | Workflow: goal achieved.
+2026-07-20 20:40:37 | INFO     | ✓ Workflow 287b67b8: completed | 'Analyze my project, identify unused files, summari' | 32.42s | 1 cycle(s)
+2026-07-20 20:40:37 | DEBUG    | EmbeddingService: encoded and cached (cache size: 42).
+2026-07-20 20:40:37 | INFO     | VectorStore: saved index (34 vectors) → memory/vector.index
+2026-07-20 20:40:37 | INFO     | VectorStore: added vector id=33 | '[WORKFLOW] Goal: 'Analyze my project, identify unused files,'
+2026-07-20 20:40:37 | DEBUG    | MemoryManager: stored memory: '[WORKFLOW] Goal: 'Analyze my project, identify unused files,'
+2026-07-20 20:40:37 | DEBUG    | Workflow: history stored.
+2026-07-20 20:40:37 | INFO     | Agent: workflow completed.
+2026-07-20 20:40:37 | DEBUG    | EmbeddingService: encoded and cached (cache size: 43).
+2026-07-20 20:40:37 | INFO     | VectorStore: saved index (35 vectors) → memory/vector.index
+2026-07-20 20:40:37 | INFO     | VectorStore: added vector id=34 | '[AGENT SUCCESS] Goal: 'Analyze my project, identify unused f'
+2026-07-20 20:40:37 | DEBUG    | MemoryManager: stored memory: '[AGENT SUCCESS] Goal: 'Analyze my project, identify unused f'
+2026-07-20 20:40:37 | DEBUG    | Agent: learned from success experience.
+2026-07-20 20:40:37 | INFO     | IRIS: Project Overview
+Folder not found.
+File not found.
+Summarize Architecture
+Generate Summary Report
+Analyze Architecture f
+2026-07-20 20:40:37 | DEBUG    | Speaking: Project Overview
+Folder not found.
+File not found.
+Summarize Architecture
+Genera...
+2026-07-20 20:41:00 | INFO     | Session ended by user.
+2026-07-20 20:41:00 | DEBUG    | Speaking: Goodbye!

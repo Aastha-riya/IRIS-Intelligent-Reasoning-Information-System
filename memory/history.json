@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "user": "what is the capital of india",
+        "assistant": "Hello! I'm IRIS, here to help. The capital of India is New Delhi.",
+        "time": "2026-07-20 20:35:09"
+    },
+    {
+        "user": "what is the wavelength of red light in cm",
+        "assistant": "The wavelength of red light is approximately 620-750 nanometers (nm). To convert this to centimeters, we can use the conversion factor: 1 nm = 10^-7 cm.\n\nSo, the range for red light in cm is approximately 620 x 10^-7 cm to 750 x 10^-7 cm.",
+        "time": "2026-07-20 20:36:40"
+    },
+    {
+        "user": "Hello",
+        "assistant": "Hello! It's nice to meet you. I'm IRIS, here to help answer any questions or provide information on a wide range of topics. How can I assist you today?",
+        "time": "2026-07-20 20:37:33"
+    },
+    {
+        "user": "Search for the latest Python 3.14 features.",
+        "assistant": "I think there may be some confusion. There is no official Python release called \"Python 3.14\". The latest version of Python is Python 3.11, which was released in December 2021.\n\nHowever, I can provide you with information on the latest features available in Python 3.11 and previous versions.\n\nFor the latest information on Python 3.x features, I recommend checking out the official Python documentation or a reliable source such as [Python.org](https://www.python.org/).\n\nHere are some recent features introduced in Python 3.10:\n\n*   **f-strings for arbitrary formatting**: f-strings now support formatting arbitrary values using the `.format()` method.\n*   **Type Hinting for Operator Overloading**: Type hinting has been extended to allow operator overloading, enabling more expressive and readable code.\n*   **New `any` and `all` functions**: New functions have been added to provide a way to check if any or all elements in an iterable are true.\n\nPlease let me know if you'd like more information on Python 3.11 or previous versions.",
+        "time": "2026-07-20 20:38:36"
+    }
+]
